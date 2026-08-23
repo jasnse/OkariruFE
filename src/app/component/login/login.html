@@ -1,0 +1,52 @@
+<div class="flex min-h-screen flex-col lg:flex-row bg-white overflow-hidden">
+
+    <div class=" relative bg-[#C41230] flex flex-1 flex-col justify-center px-8 py-12 md:px-16 lg:px-24">
+       
+        <div class=" w-full px-3 py-3 rounded-lg shadow-lg bg-[#fefefe]">
+            <div class="mx-auto w-full max-w-md">
+                <h2 class="text-3xl font-bold tracking-tight text-gray-900">Selamat Datang</h2>
+                <p class="mt-2 text-sm text-gray-600">Silakan masukkan akun Anda untuk melanjutkan.</p>
+            </div>
+
+            <form [formGroup]="form"  (ngSubmit)="onSubmit()" class="mt-8 space-y-6">
+            <div>
+                <label for=username class="block text-sm font-medium text-gray-700">Username</label>
+                <input formControlName="username" id=username type="text" placeholder="username" class="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:border-[#C41230] focus:outline-none focus:ring-1 focus:ring-[#C41230]" />
+            </div>
+
+            <div>
+                <label for=password class="block text-sm font-medium text-gray-700">Password</label>
+                <input formControlName="password" id=password type="password" placeholder="••••••••" class="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:border-[#C41230] focus:outline-none focus:ring-1 focus:ring-[#C41230]" />
+            </div>
+
+            <button type="submit" [disabled]="loading()" class="w-full rounded-lg bg-[#C41230] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#7A0000] transition-colors">
+                {{ loading() ? 'Memproses...' : 'Masuk' }}
+            </button>
+
+            @if (errorMessage()) {
+                
+                <p class="text-sm text-red-600">{{ errorMessage() }}</p>
+                }
+            </form>
+        </div>
+        
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-4 py-3 text-white rounded-lg text-center">
+            <div class="text-white/90 font-semibold tracking-wide">
+                <span>AUTHORIZED PERSONNEL ONLY</span>
+            </div>
+            <p class="text-red-100/80">
+                Access to this system is restricted to authorized Okariru administrators.
+            </p>
+        </div>
+    </div>
+
+    
+<!-- bagian kanan -->
+
+    <div class="hidden flex-2 items-center justify-center bg-[#fefefe] p-12 lg:flex">
+    <div class="max-w-lg text-center">
+      <img src="logoOverall.png" alt="logo_okariru">
+    </div>
+  </div>
+</div>
+

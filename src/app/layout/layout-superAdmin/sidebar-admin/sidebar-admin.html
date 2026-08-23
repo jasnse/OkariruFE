@@ -1,0 +1,96 @@
+
+<!--cuma muncul di mobile pas sidebar kebuka -> sidebar kebuka, belakangnya gelap -->
+@if (isOpen) {
+  <div
+    class="fixed inset-0 z-30 bg-black/50 lg:hidden"
+    (click)="onClose()">
+  </div>
+}
+
+<aside
+  class="fixed inset-y-0 left-0 z-40 flex h-screen w-64 shrink-0 flex-col justify-between bg-[#C1121F] px-4 py-6 text-white transition-transform duration-200 ease-in-out lg:static lg:translate-x-0"
+  [class.-translate-x-full]="!isOpen"
+  [class.translate-x-0]="isOpen">
+
+  <!-- Bagian Atas: Brand -->
+  <div class="space-y-6 overflow-y-auto [scrollbar-width:none]">
+    
+    <!-- Logo / Brand Header -->
+    <div class="flex justify-center items-center gap-3 ">
+      <img class="object-cover w-1/2 h-1/2" src="logoPutih.png" alt="logoPutihAPlikasi">
+    </div>
+
+    <!-- section all -->
+    <div class="space-y-1">
+      <h3 class="px-2 text-xs font-semibold uppercase tracking-wider text-red-100/70">Dashboard</h3>
+        <a routerLink="/superadmin/dashboard" routerLinkActive="bg-[#7A0000]"
+          class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-white hover:bg-[#7A0000]">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+          </svg>
+          <span>Dashboard</span>
+        </a>
+    </div>
+
+    <!-- Section 1: MAIN (dinamis dari backend, berdasarkan role user yang login) -->
+    <div class="space-y-1">
+      <h3 class="px-2 text-xs font-semibold uppercase tracking-wider text-red-100/70">Menu</h3>
+
+      @for (menu of menus(); track menu.menuId) {
+        <a [routerLink]="menu.path"
+            routerLinkActive="bg-[#7A0000]"
+            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-white hover:bg-[#7A0000]">
+          <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+          </svg>
+          <span>{{ menu.namaMenu }}</span>
+        </a>
+      } @empty {
+        <p class="px-2 text-sm text-red-100/70">Belum ada menu</p>
+      }
+    </div>
+
+    <!-- Section 3: LOAN OPERATIONS -->
+    <div class="space-y-1">
+      <h3 class="px-2 text-xs font-semibold uppercase tracking-wider text-red-100/70">Loan Operations</h3>
+      
+      <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-white hover:bg-[#7A0000]">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+        </svg>
+        <span>List Request Pinjaman</span>
+      </a>
+
+      <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-white hover:bg-[#7A0000]">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.158.813.439 1.111l1.642 1.74a1.5 1.5 0 01.378 1.026v1.272a1.5 1.5 0 01-.44 1.061l-1.64 1.64a1.5 1.5 0 01-1.061.44H9.283a1.5 1.5 0 01-1.06-.44L6.582 10.88a1.5 1.5 0 01-.44-1.06V8.548c0-.398.158-.78.44-1.06l1.64-1.64a1.5 1.5 0 011.06-.44h1.273c.231 0 .454-.035.664-.1z" />
+        </svg>
+        <span>Approval Pinjaman</span>
+      </a>
+
+      <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-white hover:bg-[#7A0000]">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5h16.5a1.5 1.5 0 011.5 1.5v9a1.5 1.5 0 01-1.5 1.5H3.75a1.5 1.5 0 01-1.5-1.5v-9a1.5 1.5 0 011.5-1.5z" />
+        </svg>
+        <span>Pencairan Pinjaman</span>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Bagian Bawah: Login / Logout -->
+  <div class="border-t border-white/20 pt-4">
+    <button
+    type="button"
+    (click)="goLogout()"
+    class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-white hover:bg-[#7A0000]">
+    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H2.25" />
+    </svg>
+        <span class="font-semibold">Log Out</span>
+    </button>
+  </div>
+
+
+</aside>
+
