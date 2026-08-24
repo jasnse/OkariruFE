@@ -1,7 +1,9 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Employee, EmployeeService } from '../../../service/employee.service';
-import fa from '@angular/common/locales/fa';
+import { EmployeeService } from '../../../service/employee.service';
+import { Employee } from '../../../model/response/employee-response.model';
+import { AddEmployeeRequest, updateEmpCredential } from '../../../model/request/employee-request.model';
+
 
 @Component({
   imports: [FormsModule],
@@ -49,12 +51,14 @@ export class MasterUser implements OnInit {
   }
 
   onSubmit(): void {
-    this.employeeService.add({
+    const payload: AddEmployeeRequest = {
       username: this.employeeForm.username,
       email: this.employeeForm.email,
       password: this.employeeForm.password,
       nip: this.employeeForm.nip
-    }).subscribe({
+    };
+
+    this.employeeService.add(payload).subscribe({
       next: () => {
         this.closeModal(),
         this.loadEmployees()
@@ -84,10 +88,12 @@ export class MasterUser implements OnInit {
 
 
   onUpdateEmploye(): void {
-    this.employeeService.update( this.editForm.id, {
+    const payload: updateEmpCredential = {
       email: this.editForm.email,
       password: this.editForm.password
-    }).subscribe({
+    };
+
+    this.employeeService.update(this.editForm.id, payload).subscribe({
       next: () => {
         this.closeEditModal()
         this.editForm = { id: 0, email: '', password: '' };
@@ -119,6 +125,7 @@ export class MasterUser implements OnInit {
           // this.fetchEmployees(); // Refresh data tabel
           this.closeDeleteModal();
           this.selectedDeleteId = 0;
+          this.currentPage.set(0);
           this.loadEmployees()
         },
         error: (err) => {

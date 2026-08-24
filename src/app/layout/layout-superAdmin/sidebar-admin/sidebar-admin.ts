@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../service/auth.service';
-import { MenuItem, MenuService } from '../../../service/menu.service';
+import { MenuService } from '../../../service/menu.service';
+import { MenuItem } from '../../../model/response/menu-response.model';
 
 @Component({
   selector: 'app-sidebar-superadmin',

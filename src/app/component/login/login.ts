@@ -1,7 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService, loginRequest } from '../../service/auth.service';
+import { AuthService } from '../../service/auth.service';
+import { loginRequest } from '../../model/request/auth-request.model';
 
 @Component({
   selector: 'app-login',
@@ -35,7 +36,7 @@ export class Login {
       next: (res) => {
         this.loading.set(false);
         if (res.role === 'SUPERADMIN') {
-          this.router.navigate(['/superadmin/dashboard']);
+          this.router.navigate(['/master/dashboard']);
         } else {
           this.errorMessage.set("role tidak dikenal")
         }

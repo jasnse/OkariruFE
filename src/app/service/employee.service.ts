@@ -2,38 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environment/environment';
 import { Observable } from 'rxjs';
-
-
-export interface Employee {
-    Id: number;
-    userName: string;
-    nip: string;
-    email: string;
-    joinedDate: string;
-    updatedDate: string;
-}
-
-export interface AddEmployeeRequest {
-  username: string;
-  email: string;
-  password: string;
-  nip: string;
-}
-
-export interface updateEmpCredential{
-    email: string,
-    password: string
-}
-
-export interface PageResponse<T> {
-    content: T[];
-    totalElements: number;
-    totalPages: number;
-    number: number;
-    size: number;
-}
-
-
+import { Employee } from '../model/response/employee-response.model';
+import { AddEmployeeRequest, updateEmpCredential } from '../model/request/employee-request.model';
+import { PageResponse } from '../model/shared/page-response.model';
 
 @Injectable({providedIn: 'root'})
 export class EmployeeService {

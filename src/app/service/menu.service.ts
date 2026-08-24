@@ -2,13 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environment/environment';
+import { MenuItem, menu } from '../model/response/menu-response.model';
+import { PageResponse } from '../model/shared/page-response.model';
+import { addMenuRequest } from '../model/request/menu-request.model';
 
-export interface MenuItem {
-    menuId: number;
-    namaMenu: string;
-    path: string;
-    icon: string;
-}
 
 @Injectable({ providedIn: 'root' })
 export class MenuService {
@@ -17,5 +14,21 @@ export class MenuService {
 
     getMyMenu(): Observable<MenuItem[]> {
         return this.http.get<MenuItem[]>(`${this.baseUrl}/my-menu`);
+    }
+
+    getAll(page = 0, size = 5, keyword = ''): Observable<PageResponse<menu>> {
+        return this.http.get<PageResponse<menu>>(`${this.baseUrl}`, {
+            params: { page, size, keyword }
+        })
+    }
+
+    add(payload: addMenuRequest): Observable<any> {
+        return this.http.post(this.baseUrl, payload)
+    }
+
+    delete(Id: number){
+        return this.http.delete(this.baseUrl, {
+    params: { Id }
+    });
     }
 }

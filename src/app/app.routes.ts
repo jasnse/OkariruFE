@@ -16,7 +16,7 @@ export const routes: Routes = [
     },
     {
 
-        path: 'superadmin',
+        path: 'master',
         canActivate: [roleGuard(['SUPERADMIN'])],
         loadComponent: () => import('./layout/layout-superAdmin/group-layout-admin/group-layout-admin')
             .then(m => m.GroupLayoutAdmin),
