@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { MenuService } from '../../../service/menu.service';
 import { menu } from '../../../model/response/menu-response.model';
 import { ICON_OPTIONS } from '../../../../environment/icon-options';
-import { addMenuRequest } from '../../../model/request/menu-request.model';
+import { addMenuRequest, updateMenu } from '../../../model/request/menu-request.model';
 
 @Component({
   imports: [FormsModule],
@@ -29,6 +29,7 @@ export class MasterMenu {
     Path: '',
     Icon:''
   };
+
 
   private resetForm(): void {
     this.menuForm = {
@@ -154,4 +155,49 @@ export class MasterMenu {
     }
   }
 
-}
+  isEditMenuModal: boolean = false
+
+  editMenuForm = {
+    Id: 0,
+    namaMenu: '',
+    deskripsiMenu: '',
+    Path: '',
+    Icon: '',
+  }
+
+  onEditMenu(menuUpdate: any): void{
+    this.editMenuForm = {
+    Id: menuUpdate.menuId,
+    namaMenu: menuUpdate.namaMenu,
+    deskripsiMenu: menuUpdate.deskripsiMenu,
+    Path: menuUpdate.path,
+    Icon:''
+    }
+    this.isEditMenuModal = true;
+  }
+
+  closeEditMenu(){
+    this.isEditMenuModal = false;
+  }
+
+  submitEdit(): void{
+    const payload: updateMenu = {
+      namaMenu: this.editMenuForm.namaMenu,
+      deskripsiMenu: this.editMenuForm.deskripsiMenu,
+      path: this.editMenuForm.Path,
+      icon: this.editMenuForm.Icon
+    }
+    this.menuService.update(this.editMenuForm.Id, payload).subscribe({
+      next: () => {
+        this.closeEditMenu()
+        this.editMenuForm = { Id: 0, namaMenu: '', deskripsiMenu: '', Path: '', Icon: '' };
+        this.loadMenu()
+      },
+      error: (err) => {
+        alert("gagal update" + err)
+      }
+    })
+
+    }
+  }
+  

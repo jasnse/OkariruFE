@@ -29,7 +29,10 @@ export const routes: Routes = [
                 data: {title: "Master user"}},
             {
                 path: 'master-menu', loadComponent: () => import('./component/component-admin/master-menu/master-menu').then(m => m.MasterMenu),
-                data: {title: "Master Menu"}
+                data: {title: "Master Menu"}},
+            {
+                path: 'master-role', loadComponent: () => import('./component/component-admin/master-role/master-role').then(m => m.MasterRole),
+                data: {title: "Master-Role"}
             }   
         ]
     }

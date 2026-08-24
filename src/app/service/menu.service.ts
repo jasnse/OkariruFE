@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environment/environment';
 import { MenuItem, menu } from '../model/response/menu-response.model';
 import { PageResponse } from '../model/shared/page-response.model';
-import { addMenuRequest } from '../model/request/menu-request.model';
+import { addMenuRequest, updateMenu } from '../model/request/menu-request.model';
 
 
 @Injectable({ providedIn: 'root' })
@@ -24,6 +24,12 @@ export class MenuService {
 
     add(payload: addMenuRequest): Observable<any> {
         return this.http.post(this.baseUrl, payload)
+    }
+
+    update(id: number, payload: updateMenu): Observable<any> {
+    return this.http.put(this.baseUrl, payload, {
+    params: { id }
+    });
     }
 
     delete(Id: number){
