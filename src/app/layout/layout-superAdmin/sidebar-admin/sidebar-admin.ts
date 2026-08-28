@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../service/auth.service';
 import { MenuService } from '../../../service/menu.service';
-import { MenuItem } from '../../../model/response/menu-response.model';
 
 @Component({
   selector: 'app-sidebar-superadmin',
@@ -15,14 +14,12 @@ export class SidebarSuperadmin implements OnInit {
   @Output() close = new EventEmitter<void>();
 
   private readonly authService = inject(AuthService);
-  private readonly menuService = inject(MenuService);
+  readonly menuService = inject(MenuService);
 
-  menus = signal<MenuItem[]>([]);
+  menus = this.menuService.myMenu;
 
   ngOnInit(): void {
-    this.menuService.getMyMenu().subscribe({
-      next: (res) => this.menus.set(res)
-    });
+    this.menuService.loadMyMenu();
   }
 
   onClose() {

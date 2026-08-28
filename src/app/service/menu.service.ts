@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../environment/environment';
+import { environment } from '../../environments/environment';
 import { MenuItem, menu } from '../model/response/menu-response.model';
 import { PageResponse } from '../model/shared/page-response.model';
 import { addMenuRequest, updateMenu } from '../model/request/menu-request.model';
@@ -11,6 +11,16 @@ import { addMenuRequest, updateMenu } from '../model/request/menu-request.model'
 export class MenuService {
     private readonly http = inject(HttpClient);
     private readonly baseUrl = `${environment.apiUrl}/menu`;
+
+    // shared state -> dipakai bareng oleh sidebar & halaman master-menu
+    private readonly myMenuSignal = signal<MenuItem[]>([]);
+    readonly myMenu = this.myMenuSignal.asReadonly();
+
+    loadMyMenu(): void {
+        this.http.get<MenuItem[]>(`${this.baseUrl}/my-menu`).subscribe({
+            next: (res) => this.myMenuSignal.set(res)
+        });
+    }
 
     getMyMenu(): Observable<MenuItem[]> {
         return this.http.get<MenuItem[]>(`${this.baseUrl}/my-menu`);

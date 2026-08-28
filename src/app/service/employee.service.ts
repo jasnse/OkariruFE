@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environment/environment';
+import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { Employee } from '../model/response/employee-response.model';
 import { AddEmployeeRequest, updateEmpCredential } from '../model/request/employee-request.model';

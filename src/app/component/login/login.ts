@@ -27,7 +27,6 @@ export class Login {
 
   onSubmit(){
     console.log('submit dipanggil, valid:', this.form.valid, 'value:', this.form.value);
-    // if(this.form.invalid) return;
 
   this.loading.set(true);
   this.errorMessage.set("");

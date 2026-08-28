@@ -1,9 +1,14 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MenuService } from '../../../service/menu.service';
 import { menu } from '../../../model/response/menu-response.model';
-import { ICON_OPTIONS } from '../../../../environment/icon-options';
+import { ICON_OPTIONS } from '../../../../shared/icon-options';
 import { addMenuRequest, updateMenu } from '../../../model/request/menu-request.model';
+import { catchError, of, switchMap, tap } from 'rxjs';
+import { PageResponse } from '../../../model/shared/page-response.model';
+
+const EMPTY_PAGE: PageResponse<menu> = { content: [], totalElements: 0, totalPages: 0, number: 0, size: 0 };
 
 @Component({
   imports: [FormsModule],
@@ -11,25 +16,73 @@ import { addMenuRequest, updateMenu } from '../../../model/request/menu-request.
   templateUrl: './master-menu.html',
 })
 
-
 export class MasterMenu {
   iconOptions = ICON_OPTIONS;
-
   private readonly menuService = inject(MenuService)
 
-  ngOnInit(): void {
-    this.loadMenu();
-  }
-
+  isEditMenuModal: boolean = false
   menu = signal<menu[]>([]);
 
-    menuForm = {
+  editMenuForm = {
+    Id: 0,
+    namaMenu: '',
+    deskripsiMenu: '',
+    Path: '',
+    Icon: '',
+  }
+
+  menuForm = {
     namaMenu: '',
     deskripsiMenu: '',
     Path: '',
     Icon:''
   };
 
+  loading = signal(false);
+  searchKeyword = signal('')
+
+  currentPage = signal(0);
+  pageSize = signal(5);
+  totalPages = signal(0);
+  totalElements = signal(0);
+
+  isModalOpen: boolean = false;
+
+  private reload = signal(0);
+
+  isDeleteModal: boolean = false;
+  selectedDeleteId: number | null = null;
+
+  private params = computed(() => ({
+    page: this.currentPage(),
+    size: this.pageSize(),
+    keyword: this.searchKeyword(),
+    _r: this.reload()
+  }));
+
+
+
+  ngOnInit(): void {
+    this.loadMenu();
+  }
+
+    private readonly menuPage$ = toObservable(this.params).pipe(
+    tap(() => this.loading.set(true)),
+    switchMap(p =>
+      this.menuService.getAll(p.page, p.size, p.keyword).pipe(
+        catchError(() => of(EMPTY_PAGE))
+      )
+    )
+  );
+
+    loadMenu(): void {
+    this.menuPage$.subscribe(res => {
+      this.menu.set(res.content);
+      this.totalPages.set(res.totalPages);
+      this.totalElements.set(res.totalElements);
+      this.loading.set(false);
+    });
+  }
 
   private resetForm(): void {
     this.menuForm = {
@@ -40,28 +93,14 @@ export class MasterMenu {
     };
   }
 
-  loading = signal(false);
-  searchKeyword = signal('')
-
-    // variable pagination
-  currentPage = signal(0);   
-  pageSize = signal(5);
-  totalPages = signal(0);
-  totalElements = signal(0);
-
-  //variable Modal
-  isModalOpen: boolean = false;
-
     setPageSize(size: string){
     this.pageSize.set(Number(size));
     this.currentPage.set(0);
-    this.loadMenu();
   }
 
   goToPage(page: number) {
-    if (page < 0 || page >= this.totalPages()) return;   
+    if (page < 0 || page >= this.totalPages()) return;
     this.currentPage.set(page);
-    this.loadMenu();
   }
 
   nextPage() {
@@ -83,27 +122,11 @@ export class MasterMenu {
 
 
   onSearch(keyword: string){
-    console.log("lee")
     this.searchKeyword.set(keyword)
     this.currentPage.set(0)
-    this.loadMenu()
   }
 
 
-    loadMenu() {
-    this.loading.set(true);
-    this.menuService.getAll(this.currentPage(), this.pageSize(), this.searchKeyword()).subscribe({
-      next: (res) => {
-        this.menu.set(res.content);
-        this.totalPages.set(res.totalPages);
-        this.totalElements.set(res.totalElements);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-      }
-    });
-  }
 
   onSubmit(){
     const payload: addMenuRequest = {
@@ -112,19 +135,21 @@ export class MasterMenu {
       path: this.menuForm.Path,
       icon: this.menuForm.Icon
     };
-    this.menuService.add(payload).subscribe({
-      next: () => {
+    this.menuService.add(payload)
+    .pipe(
+      tap(() => {
         this.closeModalMenu(),
-        this.loadMenu()
-      },
-      error: (err) => {
-        alert("tambah menu tidak berhasil: " + err)
-      }
-    })
+        this.reload.update(v => v + 1)
+        this.menuService.loadMyMenu();
+      }),
+      catchError((err) => {
+ alert("tambah menu tidak berhasil: " + err)
+ return of(null);
+      })
+    )
+    .subscribe()
   }
 
-  isDeleteModal: boolean = false;
-  selectedDeleteId: number | null = null;
 
   onDelete(menu: any){
     this.isDeleteModal = true;
@@ -136,34 +161,29 @@ export class MasterMenu {
     this.selectedDeleteId = 0;
   }
 
-  confirmDelete(){
-    if(this.selectedDeleteId !== null){
-      this.menuService.delete(this.selectedDeleteId).subscribe({
-        next: (res) => {
-          console.log("berhasil hapus", res)
-          this.closeDeleteModal();
-          this.selectedDeleteId = 0;
-          this.currentPage.set(0);
-          this.loadMenu()
-        },
-        error: (err) => {
-          alert("gagal Hapus" + err)
-          this.selectedDeleteId = 0;
-          this.closeDeleteModal()
-        }
-      })
-    }
-  }
+confirmDelete(){
+    if (this.selectedDeleteId === null) return;
 
-  isEditMenuModal: boolean = false
+    this.menuService.delete(this.selectedDeleteId)
+    .pipe(
+        tap(() => {
+            this.closeDeleteModal();
+            this.selectedDeleteId = 0;
+            this.currentPage.set(0);
+            this.reload.update(v => v + 1);
+            this.menuService.loadMyMenu();
+        }),
+        catchError((err) => {
+            alert("gagal Hapus" + err);
+            this.selectedDeleteId = 0;
+            this.closeDeleteModal();
+            return of(null);
+        })
+    )
+    .subscribe();
+}
 
-  editMenuForm = {
-    Id: 0,
-    namaMenu: '',
-    deskripsiMenu: '',
-    Path: '',
-    Icon: '',
-  }
+
 
   onEditMenu(menuUpdate: any): void{
     this.editMenuForm = {
@@ -180,24 +200,29 @@ export class MasterMenu {
     this.isEditMenuModal = false;
   }
 
-  submitEdit(): void{
+submitEdit(): void{
     const payload: updateMenu = {
-      namaMenu: this.editMenuForm.namaMenu,
-      deskripsiMenu: this.editMenuForm.deskripsiMenu,
-      path: this.editMenuForm.Path,
-      icon: this.editMenuForm.Icon
-    }
-    this.menuService.update(this.editMenuForm.Id, payload).subscribe({
-      next: () => {
-        this.closeEditMenu()
-        this.editMenuForm = { Id: 0, namaMenu: '', deskripsiMenu: '', Path: '', Icon: '' };
-        this.loadMenu()
-      },
-      error: (err) => {
-        alert("gagal update" + err)
-      }
-    })
+        namaMenu: this.editMenuForm.namaMenu,
+        deskripsiMenu: this.editMenuForm.deskripsiMenu,
+        path: this.editMenuForm.Path,
+        icon: this.editMenuForm.Icon
+    };
 
-    }
-  }
+    this.menuService.update(this.editMenuForm.Id, payload)
+    .pipe(
+        tap(() => {
+            this.closeEditMenu();
+            this.editMenuForm = { Id: 0, namaMenu: '', deskripsiMenu: '', Path: '', Icon: '' };
+            this.reload.update(v => v + 1);
+            this.menuService.loadMyMenu();
+        }),
+        catchError((err) => {
+            alert("gagal update" + err);
+            return of(null);
+        })
+    )
+    .subscribe();
+}
+
+}
   

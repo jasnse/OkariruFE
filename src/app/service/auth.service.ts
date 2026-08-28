@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environment/environment';
+import { environment } from '../../environments/environment';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable, tap} from 'rxjs';
 import { SKIP_AUTH } from '../auth/skip-auth.context';

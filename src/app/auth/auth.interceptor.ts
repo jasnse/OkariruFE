@@ -24,9 +24,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       // Tangkap response 401 (Unauthorized) atau 403 (Forbidden) saat token expired
       if (error.status === 401) {
-        // 1. Hapus token/session yang tersimpan
+        // Hapus token/session yang tersimpan
         localStorage.removeItem('token');
-        authService.logout(); // Panggil method cleanup jika ada
+        authService.logout(); 
 
         // 2. Redirect ke halaman login
         router.navigate(['/login'], {
@@ -37,4 +37,5 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       return throwError(() => error);
     })
   );
+  
 };
