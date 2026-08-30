@@ -38,11 +38,13 @@ export const routes: Routes = [
             //     data: {title: "Master Role"}},
             {
                 path: 'role-group', canActivate: [menuAccessGuard], loadComponent: () => import('./component/component-admin/role-group/role-group').then(m => m.RoleGroup),
-                data: {title: "Role Group"}
-            },
+                data: {title: "Role Group"}},
             {
                 path: 'role-group/:id', canActivate: [menuAccessGuard], loadComponent: () => import('./component/component-admin/role-group-detail/role-group-detail').then(m => m.RoleGroupDetail),
-                data: {title: "Detail Role Group"}
+                data: {title: "Detail Role Group"}},
+            {
+                path: 'master-pinjaman', canActivate: [menuAccessGuard], loadComponent: () => import('./component/component-admin/master-pinjaman/master-pinjaman').then(m => m.MasterPinjaman),
+                data: {title: "Master Pinjaman"}
             }
         ]
     }

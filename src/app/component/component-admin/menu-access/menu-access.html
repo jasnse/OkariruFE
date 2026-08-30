@@ -1,0 +1,197 @@
+<!-- halaman menu acess -->
+
+@if (isAddMenu) {
+    <div class="fixed inset-0 z-9999 h-screen w-screen bg-black/40 backdrop-blur-sm p-4 overflow-y-auto flex items-center justify-center">
+        <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl transition-all">
+
+            <!-- header -->
+            <div class="flex items-center justify-between pb-4">
+                    <h3 class="text-lg font-bold text-gray-900">Tambah menu Access</h3>
+                    <button type="button" (click)="cancelAddMenu()"
+                        class="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+            </div>
+
+            <!-- isi -->
+            <form (ngSubmit)="submitAddMenu()" class="space-y-4 pt-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">menu</label>
+                    <select
+                    [(ngModel)]="addMenuForm.menuId"
+                    name="menuId"
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 bg-white focus:border-[#b91c1c] focus:outline-none focus:ring-1 focus:ring-[#b91c1c]"
+                    required>
+                        <option [ngValue]="0" disabled>Pilih menu</option>
+                        @for (menu of menuNonAssign(); track menu.menuId) {
+                            <option [ngValue]="menu.menuId">{{ menu.namaMenu }} - {{ menu.path }}</option>
+                        }
+                    </select>
+                </div>
+
+
+                <!-- Action Buttons -->
+                <div class="flex justify-end gap-3 pt-4">
+                    <button 
+                        type="button" (click)="cancelAddMenu()" 
+                        class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                        Batal
+                    </button>
+                    <button 
+                        type="submit" 
+                        class="rounded-lg bg-[#b91c1c] px-4 py-2 text-sm font-medium text-white hover:bg-[#7f0000] transition-colors">
+                        Add Menu
+                    </button>
+                </div>
+            </form>
+
+
+
+        </div>
+    </div>
+}
+
+@if (isDeleteMenu) {
+    <div class="fixed inset-0 z-9999 h-screen w-screen bg-black/40 backdrop-blur-sm p-4 overflow-y-auto flex items-center justify-center">
+        <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl transition-all">
+
+            <!-- header -->
+            <div class="flex items-center justify-between pb-4">
+                    <h3 class="text-lg font-bold text-gray-900">Konfirmasi Delete Menu</h3>
+                    <button type="button" (click)="cancelDeleteMenu()"
+                        class="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+            </div>
+
+            <div class="py-5 text-sm text-gray-600">
+                Apakah Anda yakin ingin menghapus menu access ini pada role group ini?
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                    <button 
+                    type="button" 
+                    (click)="cancelDeleteMenu()" 
+                    class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                    No
+                    </button>
+
+                    <button 
+                    type="button" 
+                    (click)="confirmDeleteMenu()" 
+                    class="rounded-lg bg-[#b91c1c] px-4 py-2 text-sm font-medium text-white hover:bg-[#7f0000] transition-colors">
+                    Yes
+                    </button>
+                </div>
+
+
+        </div>
+    </div>
+}
+
+
+    <!-- main -->
+    <div class="flex items-center justify-between w-full mb-4 px-3 py-3 shadow-sm bg-white rounded-lg border border-gray-300">
+            <!-- Kotak Search -->
+            <div class="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-1.5 w-full max-w-xs shadow-sm">
+                <label for="searchMember" class="sr-only">Cari menu</label>
+                <input
+                    id="searchMenu"
+                    type="text"
+                    #searchInput
+                    placeholder="Cari..."
+                    (keyup.enter)="onSearchMenu(searchInput.value)"
+                    class="bg-transparent text-sm text-gray-700 focus:outline-none flex-1 min-w-0"
+                />
+                <button
+                    type="button"
+                    (click)="onSearchMenu(searchInput.value)"
+                    class="inline-flex items-center rounded-md bg-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-300 transition-colors">
+                    Cari
+                </button>
+            </div>
+            <!-- add menu access -->
+            <button 
+                (click)="onAddMenu(roleGroupId)" 
+                type="button" 
+                class="inline-flex items-center gap-2 rounded-lg bg-[#b91c1c] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#7f0000] transition-colors shrink-0">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                <span>Add menu</span>
+            </button>
+    </div>
+
+    <!-- table isi -->
+    <div class="overflow-hidden rounded-xl bg-white shadow-sm border border-gray-100">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-gray-600">
+                <thead class="bg-[#b91c1c] text-xs font-semibold uppercase tracking-wider text-white border-b border-gray-100">
+                    <tr>
+                        <th scope="col" class="px-6 py-4">NAMA MENU</th>
+                        <th scope="col" class="px-6 py-4">CREATED AT</th>
+                        <th scope="col" class="px-6 py-4">UPDATED AT</th>
+                        <th scope="col" class="px-6 py-4 text-center">AKSI</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @for (menuList of menuAssign(); track menuList.menuGroupId) {
+                        <tr>
+                            <td class="px-6 py-4">{{ menuList.namaMenu }}</td>
+                            <td class="px-6 py-4">{{ menuList.createdAt }}</td>
+                            <td class="px-6 py-4">{{ menuList.updatedAt }}</td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <button
+                                            type="button"
+                                            (click)="onDeleteMenu(menuList.menuGroupId)"
+                                            title="Hapus Menu"
+                                            class="rounded-lg p-1.5 text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                                                <path d="M3 6h18"/>
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                            </svg>
+                                            </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        } @empty {
+                            <tr>
+                                <td colspan="4" class="px-4 py-6 text-center text-gray-400">Belum ada menu access di role group ini</td>
+                            </tr>
+                        }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- pagination -->
+
+        <div class="flex items-center justify-between border-t border-gray-100 px-4 py-3">
+                <p class="text-sm text-gray-500">
+                    Halaman {{ currentPage_menu() + 1 }} dari {{ totalPages_menu() || 1 }} ({{ totalElements_menu() }} data)
+                </p>
+
+                <div class="flex gap-2">
+                    <button
+                        type="button"
+                        (click)="prevPage()"
+                        [disabled]="currentPage_menu() === 0"
+                        class="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 disabled:opacity-40 hover:bg-gray-50">
+                        Sebelumnya
+                    </button>
+
+                    <button
+                        type="button"
+                        (click)="nextPage()"
+                        [disabled]="currentPage_menu() + 1 >= totalPages_menu()"
+                        class="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 disabled:opacity-40 hover:bg-gray-50">
+                        Selanjutnya
+                    </button>
+                </div>
+            </div>
+    </div>

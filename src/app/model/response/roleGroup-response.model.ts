@@ -29,3 +29,13 @@ export interface employeNonRg{
     joinedDate: string;
     updatedDate: string;
 }
+
+export interface menuAssignedResponse{
+    menuGroupId: number;
+    menuId: number;
+    namaMenu: string;
+    roleGroupId: number;
+    namaGroupMenu: string;
+    createdAt: string;
+    updatedAt: string;
+}

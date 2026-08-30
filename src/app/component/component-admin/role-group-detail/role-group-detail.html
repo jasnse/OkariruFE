@@ -1,22 +1,49 @@
 <div class="p-6 max-w-5xl mx-auto space-y-6 bg-slate-50 min-h-screen">
     <!-- Header -->
-    <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
     <!--Navigasi & Judul -->
     <div>
         <a routerLink="/master/role-group" class="text-xs font-medium text-[#b91c1c] hover:underline">&larr; Kembali ke Role Group</a>
-        <h1 class="text-xl font-bold text-slate-900 mt-1">
-            {{ roleGroup()?.namaGroupRole || 'Detail Role Group' }}
-        </h1>
-        <p class="text-xs text-slate-500 mt-1">
-            Role: {{ role()?.nama_role || '-' }} &middot; Daftar member yang tergabung dalam role group ini.
-        </p>
+        <div class="flex items-center gap-2 mt-1">
+            <h1 class="text-xl font-bold text-slate-900">
+                {{ roleGroup()?.namaGroupRole || 'Detail Role Group' }}
+            </h1>
+            <!-- Total Member  -->
+            <span class="text-xs font-semibold px-2.5 py-0.5 bg-slate-100 text-slate-700 rounded-full border border-slate-200">
+                {{ totalElements() }} Member
+            </span>
+        </div>
+            <p class="text-xs text-slate-500 mt-1"> Role: 
+            <span class="font-medium text-slate-700">{{ role()?.nama_role || '-' }}</span> &middot; Daftar member yang tergabung dalam role group ini.
+            </p> 
     </div>
 
     <!-- Sisi Kanan: Total Member & Tombol Aksi -->
     <div class="flex items-center gap-2">
-        <span class="text-xs font-semibold px-3 py-1 bg-slate-200 text-slate-700 rounded-full">
-            Total Member: {{ totalElements() }}
-        </span>
+
+        <!-- access menu / member list -->
+        
+        @if (isMenuAcesss == false) {
+        <button 
+            (click)= goToMenuAcess();
+            class="px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm flex items-center gap-1.5 focus:ring-2 focus:ring-indigo-500/20">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+            Akses Menu
+        </button>
+        } @else {
+        <button 
+            (click)= goToMemberList();
+            class="px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm flex items-center gap-1.5 focus:ring-2 focus:ring-indigo-500/20">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+            Member List
+        </button>
+        }
+
+
 
         <!-- Tombol Update / Edit -->
         <button 
@@ -37,6 +64,7 @@
             </svg>
             Hapus
         </button>
+
     </div>
 </div>
 
@@ -156,18 +184,18 @@
             <form (ngSubmit)="submitAddMember()" class="space-y-4 pt-4">
 
                 <div>
-                <label class="block text-xs font-semibold text-gray-700 mb-1">Member</label>
-                <select
-                [(ngModel)]="addMemberForm.employeeId"
-                name="employeeId"
-                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 bg-white focus:border-[#b91c1c] focus:outline-none focus:ring-1 focus:ring-[#b91c1c]"
-                required>
-                    <option [ngValue]="0" disabled>Pilih employee</option>
-                    @for (e of employees(); track e.Id) {
-                        <option [ngValue]="e.Id">{{ e.userName }} - {{ e.nip }}</option>
-                    }
-                </select>
-            </div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Member</label>
+                    <select
+                    [(ngModel)]="addMemberForm.employeeId"
+                    name="employeeId"
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 bg-white focus:border-[#b91c1c] focus:outline-none focus:ring-1 focus:ring-[#b91c1c]"
+                    required>
+                        <option [ngValue]="0" disabled>Pilih employee</option>
+                        @for (e of employees(); track e.Id) {
+                            <option [ngValue]="e.Id">{{ e.userName }} - {{ e.nip }}</option>
+                        }
+                    </select>
+                </div>
 
             <!-- Action Buttons -->
                 <div class="flex justify-end gap-3 pt-4">
@@ -230,6 +258,13 @@
     </div>
 }
 
+    @if (isMenuAcesss == true) {
+        
+        <app-menu-access [roleGroupId]="roleGroupId"></app-menu-access>
+    
+    } @else {
+    <!-- halaman member list -->
+    
     <!-- Loading State -->
     @if (isLoading()) {
         <div class="space-y-3">
@@ -341,4 +376,7 @@
             </div>
         </div>
     }
+    }
+
+
 </div>

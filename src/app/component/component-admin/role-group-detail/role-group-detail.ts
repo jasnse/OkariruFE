@@ -3,7 +3,7 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { catchError, of, switchMap, tap, map, finalize } from 'rxjs';
 import { RoleGroupServiceTs } from '../../../service/role-group.service';
-import { RoleGroupResponse, RoleGroupMemberResponse, rGRoleResponse } from '../../../model/response/roleGroup-response.model';
+import { RoleGroupResponse, RoleGroupMemberResponse, rGRoleResponse, menuAssignedResponse } from '../../../model/response/roleGroup-response.model';
 import { RoleService } from '../../../service/role.service';
 import { roleGroupUpdate } from '../../../model/request/roleGroup-request.model';
 import { FormsModule } from '@angular/forms';
@@ -11,11 +11,13 @@ import { Employee } from '../../../model/response/employee-response.model';
 import { PageResponse } from '../../../model/shared/page-response.model';
 import { Dashboard } from '../../dashboard/dashboard';
 import { stringify } from 'node:querystring';
+import { MenuAccess } from "../menu-access/menu-access";
 
 const EMPTY_MEMBER_PAGE: PageResponse<RoleGroupMemberResponse> = { content: [], totalElements: 0, totalPages: 0, number: 0, size: 0 };
 
+
 @Component({
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, MenuAccess],
   selector: 'app-role-group-detail',
   templateUrl: './role-group-detail.html',
 })
@@ -31,6 +33,8 @@ export class RoleGroupDetail implements OnInit {
   roleGroup = signal<RoleGroupResponse | null>(null);
   members = signal<RoleGroupMemberResponse[]>([]);
   isLoading = signal<boolean>(true);
+
+
 
   // employe yang blom punya rolegroup
   employees = signal<Employee[]>([])
@@ -48,11 +52,15 @@ export class RoleGroupDetail implements OnInit {
   totalPages = signal(0);
   totalElements = signal(0);
   private reload = signal(0);
+;
 
   isDeleteConfirmation: boolean = false
   isEditModal: boolean = false
   isAddMember: boolean = false
   isRemoveConfirmation: boolean = false
+  isMenuAcesss: boolean = false
+
+  
 
     selectedId: number = 0;
 
@@ -67,7 +75,13 @@ export class RoleGroupDetail implements OnInit {
     employeeId: 0
   }
 
+  goToMenuAcess(){
+      this.isMenuAcesss = true
+  }
 
+  goToMemberList(){
+      this.isMenuAcesss = false
+  }
 
   ngOnInit(): void {
     this.loadDetail();
@@ -175,7 +189,7 @@ export class RoleGroupDetail implements OnInit {
         this.isEditModal = false
         this.selectedId = 0
         this.router.navigate(['/master/role-group']);
-        alert("menu berhasil di update")
+        alert("role group berhasil di update")
       }),
       catchError((err) => {
         alert("gagal hapus role group: " + (err?.error ?? err));
@@ -226,7 +240,7 @@ export class RoleGroupDetail implements OnInit {
         this.isAddMember = false
         this.selectedId = 0
         // this.router.navigate(['master/role-group'])
-        this.loadMembers();
+        this.reload.update(v => v+1)
       }),
       catchError((err) => {
         alert("gagal tambah member role group: " + (err?.error ?? err));
@@ -240,6 +254,7 @@ export class RoleGroupDetail implements OnInit {
     this.selectedId = rolegroupId
     this.selectedEmpId = employeId
   }
+
 
   onCancelDeleteMember(){
     this.isRemoveConfirmation = false
@@ -262,4 +277,9 @@ export class RoleGroupDetail implements OnInit {
       })
     ).subscribe()
   }
+
+
+  
 }
+
+
