@@ -20,7 +20,7 @@ export const routes: Routes = [
     {
 
         path: 'master',
-        canActivate: [roleGuard(['SUPERADMIN'])],
+        canActivate: [roleGuard(['SUPERADMIN', 'BACKOFFICE', 'MARKETING', 'BRANCH_MANAGER'])],
         loadComponent: () => import('./layout/layout-superAdmin/group-layout-admin/group-layout-admin')
             .then(m => m.GroupLayoutAdmin),
         children: [
@@ -38,13 +38,16 @@ export const routes: Routes = [
             //     data: {title: "Master Role"}},
             {
                 path: 'role-group', canActivate: [menuAccessGuard], loadComponent: () => import('./component/component-admin/role-group/role-group').then(m => m.RoleGroup),
-                data: {title: "Role Group"}},
+                data: {title: "Access Permission"}},
             {
                 path: 'role-group/:id', canActivate: [menuAccessGuard], loadComponent: () => import('./component/component-admin/role-group-detail/role-group-detail').then(m => m.RoleGroupDetail),
-                data: {title: "Detail Role Group"}},
+                data: {title: "Access Permission"}},
             {
                 path: 'master-pinjaman', canActivate: [menuAccessGuard], loadComponent: () => import('./component/component-admin/master-pinjaman/master-pinjaman').then(m => m.MasterPinjaman),
-                data: {title: "Master Pinjaman"}
+                data: {title: "Master Pinjaman"}},
+            {
+                path: 'review-pengajuan', canActivate: [menuAccessGuard], loadComponent: () => import('./component/component-loan/review-pengajuan/review-pengajuan').then(m => m.ReviewPengajuan),
+                data: {title: "Review Pengajuan"}
             }
         ]
     }

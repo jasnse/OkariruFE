@@ -30,6 +30,10 @@ export class MasterPinjaman implements OnInit{
   private reload = signal(0);
 
   isAddOpen: boolean = false;
+  isEditOpen: boolean = false;
+  isDeleteOpen: boolean = false;
+
+  selectedPinjamanId = 0;
   
   addForm = {
     jenisPinjaman: "",
@@ -109,11 +113,61 @@ export class MasterPinjaman implements OnInit{
   }
 
   onEditPinjaman(pinjamanId: number){
+    this.isEditOpen = true;
+    this.selectedPinjamanId = pinjamanId
+  }
 
+  submitEditPinjaman(){
+    if(this.selectedPinjamanId === 0)return;
+    const payload: pinjamanRequest = {
+      jenisPinjaman: this.addForm.jenisPinjaman,
+      deskripsiPinjaman: this.addForm.deskripsiPinjaman,
+      bunga: this.addForm.bunga,
+      biayaLainnya: this.addForm.biayaLainnya
+    };
+    this.pinjamanService.editPinjman(payload, this.selectedPinjamanId).pipe(
+      tap(() => {
+        this.cancelEditPinjaman();
+        this.reload.update(v => v+1)
+      }),
+      catchError((err) => {
+        this.cancelEditPinjaman()
+        alert("Gagal Edit Pinjaman" + (err?.error ?? err))
+        return of(null)
+      })
+    ).subscribe()
+  }
+
+  cancelEditPinjaman(){
+    this.isEditOpen = false;
+    this.selectedPinjamanId = 0;
+    this.resetform()
   }
 
   onDeletePinjaman(pinjamanId: number){
+    this.isDeleteOpen = true;
+    this.selectedPinjamanId = pinjamanId;
+  }
 
+  cancelDeletePinjaman(){
+    this.isDeleteOpen = false;
+    this.selectedPinjamanId = 0;
+  }
+
+  confirmDeletePinjaman(){
+    if(this.selectedPinjamanId === 0)return;
+
+    this.pinjamanService.deletePinjaman(this.selectedPinjamanId).pipe(
+      tap(() => {
+        this.cancelDeletePinjaman()
+        this.reload.update(g => g+1)
+      }),
+      catchError((err) => {
+        this.cancelDeletePinjaman()
+        alert("Gagal Delete Pinjaman"+ (err?.error ?? err))
+        return of(null)
+      })
+    ).subscribe()
   }
 
     setPageSize(size: string){

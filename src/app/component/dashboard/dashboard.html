@@ -1,1 +1,78 @@
-<p>dasboard works!</p>
+<div class="space-y-6 p-6 bg-gray-50/50 min-h-screen">
+
+  <!-- Header sambutan -->
+  <div class="rounded-xl bg-white p-5 shadow-sm border border-gray-100">
+    <h2 class="text-lg font-bold text-gray-900">Selamat datang, {{ username }} 👋</h2>
+    <p class="text-sm text-gray-500">Ringkasan data sistem Okariru hari ini.</p>
+  </div>
+
+  <!-- Statistik -->
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    @for (stat of stats(); track stat.label) {
+      <app-dashboard-stat-card
+        [label]="stat.label"
+        [value]="stat.value"
+        [iconPath]="stat.iconPath"
+        [accentClass]="stat.accentClass"
+        [loading]="loading()">
+      </app-dashboard-stat-card>
+    }
+  </div>
+
+  <!-- Quick actions -->
+  <div class="rounded-xl bg-white p-5 shadow-sm border border-gray-100">
+    <h3 class="text-sm font-semibold text-gray-900 mb-4">Menu Cepat</h3>
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      @for (action of quickActions; track action.title) {
+        <app-dashboard-quick-action
+          [title]="action.title"
+          [description]="action.description"
+          [iconPath]="action.iconPath"
+          [routerLink]="action.routerLink">
+        </app-dashboard-quick-action>
+      }
+    </div>
+  </div>
+
+  <!-- Employee terbaru -->
+  <div class="rounded-xl bg-white shadow-sm border border-gray-100 overflow-hidden">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+      <h3 class="text-sm font-semibold text-gray-900">Employee Terbaru</h3>
+      <a routerLink="/master/master-user" class="text-xs font-medium text-[#b91c1c] hover:underline">Lihat semua</a>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-gray-50 text-xs uppercase text-gray-500">
+          <tr>
+            <th class="px-5 py-3">Username</th>
+            <th class="px-5 py-3">Email</th>
+            <th class="px-5 py-3">NIP</th>
+            <th class="px-5 py-3">Bergabung</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 text-gray-700">
+          @if (loading()) {
+            <tr>
+              <td colspan="4" class="px-5 py-6 text-center text-gray-400">Memuat data...</td>
+            </tr>
+          } @else {
+            @for (emp of recentEmployees(); track emp.Id) {
+              <tr>
+                <td class="px-5 py-3">{{ emp.userName }}</td>
+                <td class="px-5 py-3">{{ emp.email }}</td>
+                <td class="px-5 py-3">{{ emp.nip }}</td>
+                <td class="px-5 py-3">{{ emp.joinedDate }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="px-5 py-6 text-center text-gray-400">Belum ada data</td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
