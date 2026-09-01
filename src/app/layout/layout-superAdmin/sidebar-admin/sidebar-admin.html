@@ -33,40 +33,45 @@
     </div>
 
     <!-- Section 1: MAIN (dinamis dari backend, berdasarkan role user yang login) -->
-    <div class="space-y-1">
-      <h3 class="px-2 text-xs font-semibold uppercase tracking-wider text-red-100/70">Menu</h3>
 
-      @for (menu of generalMenus(); track menu.menuId) {
-        <a [routerLink]="menu.path"
-            routerLinkActive="bg-[#7A0000]"
-            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-white hover:bg-[#7A0000]">
-          <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="menu.icon" />
-          </svg>
-          <span>{{ menu.namaMenu }}</span>
-        </a>
-      } @empty {
-        <p class="px-2 text-sm text-red-100/70">Belum ada menu</p>
-      }
-    </div>
+    @if (generalMenus().length > 0) {
+  <div class="space-y-1">
+    <h3 class="px-2 text-xs font-semibold uppercase tracking-wider text-red-100/70">Menu</h3>
+
+    @for (menu of generalMenus(); track menu.menuId) {
+      <a [routerLink]="menu.path"
+        routerLinkActive="bg-[#7A0000]"
+        class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-white hover:bg-[#7A0000]">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="menu.icon" />
+        </svg>
+        <span>{{ menu.namaMenu }}</span>
+      </a>
+    }
+  </div>
+} @else {
+  <p class="px-2 text-sm text-red-100/70"></p>
+}
 
     <!-- Section 3: LOAN OPERATIONS (dinamis dari backend, berdasarkan role user yang login) -->
+  @if (loanMenus().length > 0) {
     <div class="space-y-1">
       <h3 class="px-2 text-xs font-semibold uppercase tracking-wider text-red-100/70">Loan Operations</h3>
 
       @for (menu of loanMenus(); track menu.menuId) {
         <a [routerLink]="menu.path"
-            routerLinkActive="bg-[#7A0000]"
-            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-white hover:bg-[#7A0000]">
+          routerLinkActive="bg-[#7A0000]"
+          class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-white hover:bg-[#7A0000]">
           <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="menu.icon" />
           </svg>
           <span>{{ menu.namaMenu }}</span>
         </a>
-      } @empty {
-        <p class="px-2 text-sm text-red-100/70">Belum ada menu</p>
       }
     </div>
+  } @else {
+    <p class="px-2 text-sm text-red-100/70">Belum ada menu</p>
+  }
 
   </div>
 

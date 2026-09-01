@@ -8,9 +8,11 @@ export interface pinjamanTrxGet {
     tanggalReview: string | null,
     tanggalApproval: string | null,
     nominalPinjaman: number,
+    tenor: number | null,
     statusPengajuan: string
-    noteApproval: string
-    rejectNote: string
+    noteMarketing: string | null
+    noteBm: string | null
+    noteBackOffice: string | null
     lastUpdate: string
     lastUpdateBy: string
 }

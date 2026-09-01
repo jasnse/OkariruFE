@@ -171,27 +171,43 @@
 
         <!-- pagination -->
 
-        <div class="flex items-center justify-between border-t border-gray-100 px-4 py-3">
-                <p class="text-sm text-gray-500">
-                    Halaman {{ currentPage_menu() + 1 }} dari {{ totalPages_menu() || 1 }} ({{ totalElements_menu() }} data)
-                </p>
+    <div class="flex items-center justify-between border-t border-gray-100 px-4 py-3">
+        <p class="text-sm text-gray-500">
+            Halaman {{ currentPage_menu() + 1 }} dari {{ totalPages_menu() }} ({{ totalElements_menu() }} data)
+        </p>
 
-                <div class="flex gap-2">
-                    <button
-                        type="button"
-                        (click)="prevPage()"
-                        [disabled]="currentPage_menu() === 0"
-                        class="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 disabled:opacity-40 hover:bg-gray-50">
-                        Sebelumnya
-                    </button>
+    <div class="flex gap-2">
 
-                    <button
-                        type="button"
-                        (click)="nextPage()"
-                        [disabled]="currentPage_menu() + 1 >= totalPages_menu()"
-                        class="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 disabled:opacity-40 hover:bg-gray-50">
-                        Selanjutnya
-                    </button>
-                </div>
-            </div>
+      <div>
+        <select
+      id="role"
+      (change)="setPageSize($any($event.target).value)"
+      class="w-full  rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-[#b91c1c] focus:outline-none focus:ring-1 focus:ring-[#b91c1c] disabled:bg-gray-50"
+    >
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+      </div>
+
+        <button 
+            type="button"
+            (click)="prevPage()"
+            [disabled]="currentPage_menu() === 0"
+            class="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 disabled:opacity-40 hover:bg-gray-50">
+            Sebelumnya
+        </button>
+
+        <button
+            type="button"
+            (click)="nextPage()"
+            [disabled]="currentPage_menu() + 1 >= totalPages_menu()"
+            class="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 disabled:opacity-40 hover:bg-gray-50">
+            Selanjutnya
+        </button>
     </div>
+
+    </div>
+
+</div>

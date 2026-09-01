@@ -53,6 +53,11 @@ export class MenuAccess implements OnInit {
     this.goToPage(this.currentPage_menu() - 1);
   }
 
+    setPageSize(size: string){
+    this.pageSize_menu.set(Number(size));
+    this.currentPage_menu.set(0);
+  }
+
   //menu acess
     private menuParams = computed(() => ({
     page_m: this.currentPage_menu(),

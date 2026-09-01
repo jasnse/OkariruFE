@@ -47,7 +47,13 @@ export const routes: Routes = [
                 data: {title: "Master Pinjaman"}},
             {
                 path: 'review-pengajuan', canActivate: [menuAccessGuard], loadComponent: () => import('./component/component-loan/review-pengajuan/review-pengajuan').then(m => m.ReviewPengajuan),
-                data: {title: "Review Pengajuan"}
+                data: {title: "Review Pengajuan"}},
+            {
+                path: 'approval-pengajuan', canActivate: [menuAccessGuard], loadComponent: () => import('./component/component-loan/approval-pengajuan/approval-pengajuan').then(m => m.ApprovalPengajuan),
+                data: {title: "Approval Pengajuan"}},
+            {
+                path: 'disburse-pengajuan', canActivate: [menuAccessGuard], loadComponent: () => import('./component/component-loan/disburse-pengajuan/disburse-pengajuan').then(m => m.DisbursePengajuan),
+                data: {title: "Pencairan Pengajuan"}
             }
         ]
     }

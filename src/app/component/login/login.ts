@@ -34,7 +34,7 @@ export class Login {
     this.authService.loginEmploye(this.form.getRawValue() as loginRequest).subscribe({
       next: (res) => {
         this.loading.set(false);
-        if (res.role === 'SUPERADMIN' || res.role === 'BACKOFFICE') {
+        if (res.role === 'SUPERADMIN' || res.role === 'BACKOFFICE' || res.role === 'MARKETING' || res.role === 'BRANCH_MANAGER') {
           this.router.navigate(['/master/dashboard']);
         } else {
           this.errorMessage.set("role tidak dikenal")
