@@ -1,0 +1,356 @@
+<div class="min-h-screen bg-white text-slate-900">
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="sticky top-0 z-50 w-full bg-white/70 backdrop-blur-xl border-b border-slate-200/70">
+    <nav class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center gap-2 cursor-pointer">
+        <img src="logoSmall.png" alt="Okariru" class="h-10 w-auto" />
+      </div>
+
+      <!-- Menu Navigasi Tengah -->
+      <div class="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-500">
+        <a href="#simulasi" class="hover:text-[#C41230] transition-colors">Simulasi</a>
+        <a href="#keunggulan" class="hover:text-[#C41230] transition-colors">Keunggulan</a>
+        <a href="#cara-kerja" class="hover:text-[#C41230] transition-colors">Cara Kerja</a>
+      </div>
+
+      <!-- Aksi Kanan -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a
+          routerLink="/login"
+          class="hidden sm:inline-block text-sm font-semibold text-slate-700 hover:text-[#C41230] transition-colors px-3 py-2"
+        >Masuk</a>
+
+        <a
+          href="https://play.google.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="bg-[#C41230] text-white text-sm font-semibold px-4 sm:px-6 py-2.5 rounded-full shadow-md shadow-[#C41230]/25 hover:bg-[#7A0000] transition-colors"
+        >Ajukan Pinjaman</a>
+
+        <!-- Hamburger (mobile & tablet) -->
+        <button
+          type="button"
+          (click)="toggleMobileMenu()"
+          class="lg:hidden inline-flex items-center justify-center h-10 w-10 rounded-full text-slate-700 hover:bg-slate-100 transition-colors"
+          [attr.aria-expanded]="mobileMenuOpen()"
+          aria-label="Buka menu navigasi"
+        >
+          @if (!mobileMenuOpen()) {
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          }
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile dropdown panel -->
+    @if (mobileMenuOpen()) {
+      <div class="lg:hidden border-t border-slate-200/70 bg-white/95 backdrop-blur-xl px-6 py-4">
+        <div class="flex flex-col gap-1 text-sm font-medium text-slate-600">
+          <a (click)="closeMobileMenu()" href="#simulasi" class="py-2.5 hover:text-[#C41230] transition-colors">Simulasi</a>
+          <a (click)="closeMobileMenu()" href="#keunggulan" class="py-2.5 hover:text-[#C41230] transition-colors">Keunggulan</a>
+          <a (click)="closeMobileMenu()" href="#cara-kerja" class="py-2.5 hover:text-[#C41230] transition-colors">Cara Kerja</a>
+          <a
+            (click)="closeMobileMenu()"
+            routerLink="/login"
+            class="sm:hidden mt-2 pt-3 border-t border-slate-200 py-2.5 font-semibold text-slate-800 hover:text-[#C41230] transition-colors"
+          >Masuk</a>
+        </div>
+      </div>
+    }
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative bg-linear-to-br from-[#C41230] via-[#a30f28] to-[#7A0000] overflow-hidden">
+    <!-- decorative blobs -->
+    <div class="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-white/10 blur-3xl"></div>
+    <div class="pointer-events-none absolute bottom-0 right-0 h-112 w-md rounded-full bg-white/10 blur-3xl"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 pt-20 pb-28 grid lg:grid-cols-2 gap-12 items-center">
+      <!-- Copy -->
+      <div class="text-white">
+        <span class="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-md border border-white/20 px-4 py-1.5 text-xs font-semibold tracking-wide uppercase">
+          Solusi Pinjaman Terpercaya
+        </span>
+
+        <h1 class="mt-6 text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
+          Wujudkan Kebutuhan Dana Anda,
+          <span class="text-white/90">Lebih Cepat &amp; Mudah</span>
+        </h1>
+
+        <p class="mt-5 text-white/80 text-base md:text-lg max-w-xl">
+          Ajukan pinjaman dengan proses digital, bunga kompetitif, dan pencairan cepat.
+          Simulasikan angsuran Anda sebelum mengajukan, tanpa ribet.
+        </p>
+
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <a
+            href="#simulasi"
+            class="bg-white text-[#C41230] font-semibold px-7 py-3 rounded-full shadow-lg shadow-black/10 hover:bg-white/90 transition-colors"
+          >Simulasikan Pinjaman</a>
+          <a
+            href="#cara-kerja"
+            class="border border-white/40 text-white font-semibold px-7 py-3 rounded-full hover:bg-white/10 transition-colors"
+          >Cara Kerja</a>
+        </div>
+
+        <div class="mt-10 flex flex-wrap gap-4">
+          <div class="rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 px-5 py-3">
+            <p class="text-2xl font-bold">10jt+</p>
+            <p class="text-xs text-white/70">Plafond Pinjaman</p>
+          </div>
+          <div class="rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 px-5 py-3">
+            <p class="text-2xl font-bold">&lt; 24 Jam</p>
+            <p class="text-xs text-white/70">Proses Pencairan</p>
+          </div>
+          <div class="rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 px-5 py-3">
+            <p class="text-2xl font-bold">1.5%</p>
+            <p class="text-xs text-white/70">Bunga Mulai Dari</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3D hero illustration -->
+      <div class="relative hidden lg:flex justify-center items-center h-104">
+        <!-- soft glass backdrop blob -->
+        <div class="absolute h-80 w-80 rounded-full bg-white/10 backdrop-blur-2xl border border-white/20"></div>
+
+        <img
+          src="original-image.svg"
+          alt="Ilustrasi simulasi pinjaman Okariru"
+          class="relative w-full max-w-md h-auto drop-shadow-2xl"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SIMULASI PINJAMAN ============ -->
+  <section id="simulasi" class="relative py-24 bg-slate-50 overflow-hidden scroll-mt-20">
+    <div class="pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 h-72 w-160 rounded-full bg-[#C41230]/10 blur-3xl"></div>
+
+    <div class="relative max-w-5xl mx-auto px-6">
+      <div class="reveal text-center mb-12">
+        <span class="text-xs font-bold tracking-widest text-[#C41230] uppercase">Simulasi Pinjaman</span>
+        <h2 class="mt-3 text-3xl md:text-4xl font-extrabold text-slate-900">Hitung Estimasi Angsuran Anda</h2>
+        <p class="mt-3 text-slate-500 max-w-xl mx-auto">
+          Geser jumlah pinjaman dan pilih tenor untuk melihat estimasi angsuran bulanan Anda secara instan.
+        </p>
+      </div>
+
+      <div class="reveal rounded-3xl bg-white/60 backdrop-blur-xl border border-white/80 shadow-xl shadow-slate-200/60 p-6 md:p-10 grid md:grid-cols-2 gap-10">
+
+        <!-- Input side -->
+        <div>
+          <div class="mb-8">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-sm font-semibold text-slate-700">Jumlah Pinjaman</label>
+              <span class="text-lg font-bold text-[#C41230]">{{ formatRupiah(jumlahPinjaman()) }}</span>
+            </div>
+            <input
+              type="range"
+              [min]="minPinjaman"
+              [max]="maxPinjaman"
+              [step]="stepPinjaman"
+              [value]="jumlahPinjaman()"
+              (input)="onSliderInput($any($event.target).value)"
+              class="w-full h-2 rounded-full accent-[#C41230] cursor-pointer"
+            />
+            <div class="flex justify-between text-xs text-slate-400 mt-1">
+              <span>{{ formatRupiah(minPinjaman) }}</span>
+              <span>{{ formatRupiah(maxPinjaman) }}</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-sm font-semibold text-slate-700 mb-2 block">Pilih Tenor</label>
+            <div class="flex flex-wrap gap-2">
+              @for (bulan of tenorOptions; track bulan) {
+                <button
+                  type="button"
+                  (click)="setTenor(bulan)"
+                  [class]="tenor() === bulan
+                    ? 'px-4 py-2 rounded-full text-sm font-semibold border transition-colors bg-[#C41230] text-white border-[#C41230]'
+                    : 'px-4 py-2 rounded-full text-sm font-semibold border transition-colors bg-white text-slate-600 border-slate-200'"
+                >{{ bulan }} Bulan</button>
+              }
+            </div>
+          </div>
+
+          <p class="mt-8 text-xs text-slate-400 leading-relaxed">
+            *Simulasi bersifat ilustratif menggunakan asumsi bunga flat 1.5%/bulan, bukan merupakan penawaran resmi.
+            Nilai final ditentukan setelah proses pengajuan dan verifikasi.
+          </p>
+        </div>
+
+        <!-- Result side (glass highlight) -->
+        <div class="rounded-2xl bg-linear-to-br from-[#C41230] to-[#7A0000] text-white p-7 flex flex-col justify-center shadow-lg shadow-[#C41230]/20">
+          <p class="text-sm text-white/70">Estimasi Angsuran per Bulan</p>
+          <p class="text-3xl md:text-4xl font-extrabold mt-1">{{ formatRupiah(angsuranPerBulan()) }}</p>
+
+          <div class="mt-6 space-y-3 border-t border-white/20 pt-5">
+            <div class="flex justify-between text-sm">
+              <span class="text-white/70">Pokok Pinjaman</span>
+              <span class="font-semibold">{{ formatRupiah(jumlahPinjaman()) }}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-white/70">Estimasi Total Bunga</span>
+              <span class="font-semibold">{{ formatRupiah(totalBunga()) }}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-white/70">Tenor</span>
+              <span class="font-semibold">{{ tenor() }} Bulan</span>
+            </div>
+            <div class="flex justify-between text-base pt-2 border-t border-white/20">
+              <span class="font-semibold">Total Pembayaran</span>
+              <span class="font-bold">{{ formatRupiah(totalPembayaran()) }}</span>
+            </div>
+          </div>
+
+          <a
+            href="https://play.google.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-7 inline-block text-center bg-white text-[#C41230] font-semibold px-6 py-3 rounded-full hover:bg-white/90 transition-colors"
+          >Ajukan Sekarang</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ KEUNGGULAN ============ -->
+  <section id="keunggulan" class="py-24 bg-white scroll-mt-20">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="reveal text-center mb-14">
+        <span class="text-xs font-bold tracking-widest text-[#C41230] uppercase">Keunggulan</span>
+        <h2 class="mt-3 text-3xl md:text-4xl font-extrabold text-slate-900">Kenapa Memilih Okariru</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="reveal rounded-2xl bg-white/70 backdrop-blur-md border border-slate-100 shadow-sm hover:shadow-lg transition-shadow p-6" style="--reveal-delay: 0ms">
+          <div class="h-12 w-12 rounded-xl bg-[#C41230]/10 text-[#C41230] flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 class="font-semibold text-slate-900">Proses Cepat</h3>
+          <p class="mt-2 text-sm text-slate-500">Pengajuan dilakukan online dan diproses dalam hitungan jam.</p>
+        </div>
+
+        <div class="reveal rounded-2xl bg-white/70 backdrop-blur-md border border-slate-100 shadow-sm hover:shadow-lg transition-shadow p-6" style="--reveal-delay: 100ms">
+          <div class="h-12 w-12 rounded-xl bg-[#C41230]/10 text-[#C41230] flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="font-semibold text-slate-900">Bunga Kompetitif</h3>
+          <p class="mt-2 text-sm text-slate-500">Suku bunga bersaing dengan simulasi transparan sejak awal.</p>
+        </div>
+
+        <div class="reveal rounded-2xl bg-white/70 backdrop-blur-md border border-slate-100 shadow-sm hover:shadow-lg transition-shadow p-6" style="--reveal-delay: 200ms">
+          <div class="h-12 w-12 rounded-xl bg-[#C41230]/10 text-[#C41230] flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h3 class="font-semibold text-slate-900">Aman &amp; Terpercaya</h3>
+          <p class="mt-2 text-sm text-slate-500">Data dan transaksi Anda terlindungi dengan sistem yang aman.</p>
+        </div>
+
+        <div class="reveal rounded-2xl bg-white/70 backdrop-blur-md border border-slate-100 shadow-sm hover:shadow-lg transition-shadow p-6" style="--reveal-delay: 300ms">
+          <div class="h-12 w-12 rounded-xl bg-[#C41230]/10 text-[#C41230] flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4zm6 0a4 4 0 10-4-4" />
+            </svg>
+          </div>
+          <h3 class="font-semibold text-slate-900">Dukungan Tim Ahli</h3>
+          <p class="mt-2 text-sm text-slate-500">Tim kami siap membantu proses pengajuan Anda dari awal hingga selesai.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CARA KERJA ============ -->
+  <section id="cara-kerja" class="py-24 bg-slate-50 scroll-mt-20">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="reveal text-center mb-14">
+        <span class="text-xs font-bold tracking-widest text-[#C41230] uppercase">Cara Kerja</span>
+        <h2 class="mt-3 text-3xl md:text-4xl font-extrabold text-slate-900">4 Langkah Mudah Mengajukan Pinjaman</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        @for (step of [
+          { no: '01', title: 'Simulasikan', desc: 'Hitung estimasi angsuran sesuai kebutuhan Anda.' },
+          { no: '02', title: 'Ajukan', desc: 'Isi formulir pengajuan pinjaman secara online.' },
+          { no: '03', title: 'Verifikasi', desc: 'Tim kami memverifikasi data pengajuan Anda.' },
+          { no: '04', title: 'Pencairan', desc: 'Dana cair langsung ke rekening Anda.' }
+        ]; track step.no; let i = $index) {
+          <div class="reveal relative rounded-2xl bg-white border border-slate-100 shadow-sm p-6" [style.--reveal-delay]="(i * 100) + 'ms'">
+            <span class="text-4xl font-extrabold text-[#C41230]">{{ step.no }}</span>
+            <h3 class="mt-2 font-semibold text-slate-900">{{ step.title }}</h3>
+            <p class="mt-2 text-sm text-slate-500">{{ step.desc }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BANNER ============ -->
+  <section class="py-20 px-6">
+    <div class="reveal relative max-w-5xl mx-auto rounded-3xl overflow-hidden bg-linear-to-r from-[#C41230] to-[#7A0000] px-8 py-14 text-center shadow-xl shadow-[#C41230]/20">
+      <div class="pointer-events-none absolute -top-10 -right-10 h-56 w-56 rounded-full bg-white/10 blur-3xl"></div>
+      <h2 class="text-2xl md:text-3xl font-extrabold text-white">Siap Wujudkan Kebutuhan Dana Anda?</h2>
+      <p class="mt-3 text-white/80 max-w-lg mx-auto">Ajukan pinjaman sekarang dan rasakan proses yang cepat, mudah, dan transparan.</p>
+      <a
+        href="https://play.google.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-7 inline-block bg-white text-[#C41230] font-semibold px-8 py-3 rounded-full hover:bg-white/90 transition-colors"
+      >Ajukan Pinjaman Sekarang</a>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-slate-900 text-slate-300">
+    <div class="max-w-7xl mx-auto px-6 py-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div>
+        <img src="logoPutih.png" alt="Okariru" class="h-10 w-auto mb-3" />
+        <p class="text-sm text-slate-400">Solusi pinjaman digital yang cepat, mudah, dan terpercaya.</p>
+      </div>
+
+      <div>
+        <h4 class="font-semibold text-white mb-3">Produk</h4>
+        <ul class="space-y-2 text-sm text-slate-400">
+          <li><a href="#produk" class="hover:text-white transition-colors">Pinjaman Modal Usaha</a></li>
+          <li><a href="#produk" class="hover:text-white transition-colors">Pinjaman Multiguna</a></li>
+          <li><a href="#simulasi" class="hover:text-white transition-colors">Simulasi Pinjaman</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-semibold text-white mb-3">Perusahaan</h4>
+        <ul class="space-y-2 text-sm text-slate-400">
+          <li><a href="#keunggulan" class="hover:text-white transition-colors">Keunggulan</a></li>
+          <li><a href="#cara-kerja" class="hover:text-white transition-colors">Cara Kerja</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-semibold text-white mb-3">Bantuan</h4>
+        <ul class="space-y-2 text-sm text-slate-400">
+          <li>0852-1182-1384</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-slate-800 py-5 text-center text-xs text-slate-500">
+      &copy; Jason Theofillus Gunawan - 2026014. Okariru
+    </div>
+  </footer>
+</div>

@@ -8,7 +8,7 @@ import { menuAccessGuard } from './core/auth/menu-access.guards';
 
 export const routes: Routes = [
 
-    { path: '', redirectTo: 'login', pathMatch: 'full' },
+    { path: '', pathMatch: 'full', loadComponent: () => import('./features/landing-page/landing-page').then(m => m.LandingPage) },
 
 // roleguard: cek role sesuai
 // menuaccess: cek menu di assign sesuai role
