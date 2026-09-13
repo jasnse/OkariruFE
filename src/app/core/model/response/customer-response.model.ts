@@ -2,6 +2,7 @@ export interface customerGet {
     customerId: number,
     userName: string,
     sidName: string,
+    email: string,
     nik: string,
     tempatLahir: string,
     tanggalLahir: string,

@@ -1,0 +1,10 @@
+<div class="rounded-xl bg-gradient-to-r from-[#b91c1c] to-[#7f0000] p-6 text-white shadow-sm">
+    <p class="text-sm text-red-100">{{ greeting() }}</p>
+    <h2 class="mt-1 text-xl font-bold">{{ username }}</h2>
+
+    @if (roleLabel) {
+        <span class="mt-3 inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-xs font-medium">
+            {{ roleLabel }}
+        </span>
+    }
+</div>

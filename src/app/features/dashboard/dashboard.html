@@ -1,5 +1,27 @@
 <div class="space-y-6 p-6 bg-gray-50/50 min-h-screen">
 
+    <app-welcome-banner [username]="username" [roleLabel]="roleLabel()"></app-welcome-banner>
 
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        @for (stat of stats(); track stat.label) {
+            <app-stat-card
+                [label]="stat.label"
+                [value]="stat.value"
+                [hint]="stat.hint ?? ''"
+                [icon]="stat.icon"
+                [color]="stat.color">
+            </app-stat-card>
+        }
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <app-chart type="pie" [data]="statusPieData()"></app-chart>
+
+        @if (role() === 'SUPERADMIN') {
+            <app-chart type="line" [data]="monthlyTrend()"></app-chart>
+        } @else {
+            <app-chart type="bar" [data]="comparisonBarData()"></app-chart>
+        }
+    </div>
 
 </div>

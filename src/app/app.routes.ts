@@ -21,8 +21,8 @@ export const routes: Routes = [
 
         path: 'master',
         canActivate: [roleGuard(['SUPERADMIN', 'BACKOFFICE', 'MARKETING', 'BRANCH_MANAGER'])],
-        loadComponent: () => import('./shared/layout/layout-superAdmin/group-layout-admin/group-layout-admin')
-            .then(m => m.GroupLayoutAdmin),
+    //manggil layout [sidebar sama navbar] dan akan tampil terus, yang berubah itu childernya
+        loadComponent: () => import('./shared/layout/layout-superAdmin/group-layout-admin/group-layout-admin').then(m => m.GroupLayoutAdmin),
         children: [
             {
                 path: 'dashboard', loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard),

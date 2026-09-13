@@ -1,7 +1,7 @@
 <div class="flex min-h-screen flex-col lg:flex-row bg-white overflow-hidden">
 
     <div class=" relative bg-[#C41230] flex flex-1 flex-col justify-center px-8 py-12 md:px-16 lg:px-24">
-       
+
         <div class=" w-full px-3 py-3 rounded-lg shadow-lg bg-[#fefefe]">
             <div class="mx-auto w-full max-w-md">
                 <h2 class="text-3xl font-bold tracking-tight text-gray-900">Selamat Datang</h2>
@@ -22,6 +22,10 @@
             <button type="submit" [disabled]="loading()" class="w-full rounded-lg bg-[#C41230] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#7A0000] transition-colors">
                 {{ loading() ? 'Memproses...' : 'Masuk' }}
             </button>
+
+            <a routerLink="/" class="block w-full text-center rounded-lg border border-[#C41230] px-4 py-2.5 text-sm font-semibold text-[#C41230] hover:bg-[#C41230] hover:text-white transition-colors">
+                Kembali
+            </a>
 
             @if (errorMessage()) {
                 
