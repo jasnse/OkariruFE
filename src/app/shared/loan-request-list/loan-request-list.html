@@ -200,8 +200,10 @@
                         <div class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
                             <div><p class="text-xs text-gray-500">Tenor</p><p class="font-medium text-gray-800">{{ selectedTrx()?.tenor }} bulan</p></div>
                             <div><p class="text-xs text-gray-500">Bunga (%)</p><p class="font-medium text-gray-800">{{ selectedPinjaman()?.bunga ? selectedPinjaman()?.bunga + '%' : '-' }}</p></div>
+                            <div><p class="text-xs text-gray-500">Biaya Lainnya</p><p class="font-medium text-gray-800">{{ (selectedPinjaman()?.biayaLainnya | number) ?? '-' }}</p></div>
                             <div><p class="text-xs text-gray-500">Nominal Pinjaman</p><p class="font-medium text-gray-800">{{ selectedTrx()?.nominalPinjaman | number }}</p></div>
-                            <div><p class="text-xs text-gray-500">Jumlah Bunga</p><p class="font-medium text-gray-800">{{ hitungJumlahBunga() | number:'1.0-0' }}</p></div>
+                            <div><p class="text-xs text-gray-500">Jumlah Bunga</p><p class="font-medium text-gray-800">{{ hitungJumlahBungaSampaiLunas() | number:'1.0-0' }}</p></div>
+                            <div><p class="text-xs text-gray-500"> Bunga perbulan</p><p class="font-medium text-gray-800">{{ hitungJumlahBungaPerBulan() | number:'1.0-0' }}</p></div>
                             <div><p class="text-xs text-gray-500">Total Hutang</p><p class="font-medium text-gray-800">{{ hitungTotalHutang() | number:'1.0-0' }}</p></div>
                             <div><p class="text-xs text-gray-500">Total Angsuran / Bulan</p><p class="font-medium text-gray-800">{{ hitungTotalAngsuran() | number:'1.0-0' }}</p></div>
                         </div>

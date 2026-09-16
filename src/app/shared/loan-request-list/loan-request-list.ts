@@ -14,6 +14,7 @@ import { pinjamanGet } from '../../core/model/response/pinjaman-response.model';
 import { documentGet } from '../../core/model/response/document-response.model';
 import { pinjamanTransactionUpdate } from '../../core/model/request/pinjamanTrx-request.model';
 import { PageResponse } from '../../core/model/shared/page-response.model';
+import { AngsuranService } from '../../core/service/angsuran.service';
 
 const EMPTY_PAGE: PageResponse<pinjamanTrxGet> = { content: [], totalElements: 0, totalPages: 0, number: 0, size: 0 };
 
@@ -41,6 +42,7 @@ export class LoanRequestList implements OnInit, OnDestroy {
   private readonly customerService = inject(CustomerService)
   private readonly pinjamanService = inject(PinjamanService)
   private readonly documentService = inject(DocumentService)
+  private readonly angsuranService = inject(AngsuranService)
 
   pengajuanList = signal<pinjamanTrxGet[]>([]);
 
@@ -112,22 +114,47 @@ export class LoanRequestList implements OnInit, OnDestroy {
 
   // ===== perhitungan pinjaman =====
 
-  hitungJumlahBunga(): number {
-    const nominal = this.selectedTrx()?.nominalPinjaman ?? 0;
-    const bungaRate = this.selectedPinjaman()?.bunga ?? 0;
-    return nominal * bungaRate;
-  }
+  // hitungJumlahBunga(): number {
+  //   const nominal = this.selectedTrx()?.nominalPinjaman ?? 0;
+  //   const bungaRate = this.selectedPinjaman()?.bunga ?? 0;
+  //   return nominal * (bungaRate / 100);
+  // }
+  hitungJumlahBungaSampaiLunas(): number {
+  const nominal = this.selectedTrx()?.nominalPinjaman ?? 0;
+  const tenor = this.selectedTrx()?.tenor ?? 0;
+  const bungaRate = this.selectedPinjaman()?.bunga ?? 0;
+  const bungaPerBulan = (nominal * (bungaRate / 100));
+  const result = bungaPerBulan * tenor;
+  console.log(`hitungJumlahBungaSampaiLunas: nominal=${nominal}, tenor=${tenor}, bungaRate=${bungaRate}, bungaPerBulan=${bungaPerBulan}, result=${result}`);
+  return result;
+
+}
+
+  hitungJumlahBungaPerBulan(): number {
+  const nominal = this.selectedTrx()?.nominalPinjaman ?? 0;
+  const bungaRate = this.selectedPinjaman()?.bunga ?? 0;
+  const bungaPerBulan = (nominal * (bungaRate / 100));
+  return bungaPerBulan;
+}
 
   hitungTotalHutang(): number {
-    const nominal = this.selectedTrx()?.nominalPinjaman ?? 0;
-    return nominal + this.hitungJumlahBunga();
+    const angsuranPerBulan = this.hitungTotalAngsuran();
+    const tenor = this.selectedTrx()?.tenor ?? 0;
+    // biaya lainnya sudah dicicil merata di hitungTotalAngsuran(), tidak perlu ditambah lagi di sini
+    return angsuranPerBulan * tenor;
   }
 
   hitungTotalAngsuran(): number {
-    const tenor = this.selectedTrx()?.tenor ?? 0;
-    if (!tenor) return 0;
-    return this.hitungTotalHutang() / tenor;
-  }
+  const nominal = this.selectedTrx()?.nominalPinjaman ?? 0;
+  const tenor = this.selectedTrx()?.tenor ?? 0;
+  if (!tenor) return 0;
+  const pokokPerBulan = Math.floor(nominal / tenor);
+  const bungaRate = this.selectedPinjaman()?.bunga ?? 0;
+  const bungaPerBulan = Math.floor(nominal * (bungaRate / 100));
+  const biayaLainnya = this.selectedPinjaman()?.biayaLainnya ?? 0;
+  const biayaLainnyaPerBulan = Math.floor(biayaLainnya / tenor);
+  return pokokPerBulan + bungaPerBulan + biayaLainnyaPerBulan;
+}
 
   onSearch(keyword: string){
     this.searchKeyword.set(keyword);
@@ -244,7 +271,10 @@ export class LoanRequestList implements OnInit, OnDestroy {
       }),
       catchError((err) => {
         this.submitting.set(false);
-        alert(`Gagal ${errorLabel}: ` + (err?.error?.message ?? err));
+        const message = typeof err?.error === 'string'
+          ? err.error
+          : (err?.error?.message ?? err?.message ?? 'Terjadi kesalahan tidak diketahui');
+        alert(`Gagal ${errorLabel}: ${message}`);
         return of(null);
       })
     ).subscribe();
@@ -289,16 +319,30 @@ export class LoanRequestList implements OnInit, OnDestroy {
     this.submitUpdate(payload, trx, 'reject pengajuan');
   }
 
-  // stage: pencairan — TODO: belum ada AngsuranService call di sini.
-  // Yang perlu dilakukan (lihat AngsuranController.java POST /api/v1/angsuran/generate):
-  // 1. Buat AngsuranService di FE (service/angsuran.service.ts) dengan method generate(transPinjamanId, tenor)
-  //    yang hit POST {apiUrl}/angsuran/generate dengan body { transPinjamanId, tenor }.
-  // 2. Panggil service itu di sini pakai this.selectedTrx()!.transPinjamanId dan this.selectedTrx()!.tenor.
-  // 3. Setelah generate angsuran sukses, decide status akhir pinjaman_transaction-nya apa (mis. 'Dicairkan')
-  //    lalu update juga lewat pinjamanTransactionService.update() seperti method lain di atas.
   cairkanPinjaman(){
     const trx = this.selectedTrx();
-    if (!trx) return;
-    alert('TODO: belum diimplementasi — lihat komentar cairkanPinjaman() di loan-request-list.ts');
+    if (!trx || trx.tenor == null) return;
+
+this.submitting.set(true);
+
+  this.angsuranService.generate(trx.transPinjamanId, trx.tenor).pipe(
+    switchMap(() => {
+      const payload = this.basePayload(trx);
+      payload.statusPengajuan = 'Dicairkan';
+      payload.tanggalApproval = new Date().toISOString().slice(0, 10);
+      payload.noteBackOffice = this.noteForm.note;
+      return this.pinjamanTransactionService.update(trx.transPinjamanId, payload);
+    }),
+    tap(() => {
+      this.submitting.set(false);
+      this.closeDetail();
+      this.reload.update(v => v + 1);
+    }),
+    catchError((err) => {
+      this.submitting.set(false);
+      alert('Gagal cairkan pinjaman: ' + (err?.error?.message ?? err));
+      return of(null);
+    })
+  ).subscribe();
   }
 }
