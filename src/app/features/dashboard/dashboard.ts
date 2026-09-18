@@ -124,6 +124,10 @@ export class Dashboard {
       this.counts.update(c => ({ ...c, countDitolak: res.totalElements })));
     this.pinjamanTransactionService.getAll(0, 1, '', 'Disetujui').subscribe(res =>
       this.counts.update(c => ({ ...c, countDiApprove: res.totalElements })));
+    this.pinjamanTransactionService.getAll(0, 1, '', 'Dicairkan').subscribe(res =>
+      this.counts.update(c => ({ ...c, countDiCairkan: res.totalElements })));
+    this.pinjamanTransactionService.getAll(0, 1, '', 'Lunas').subscribe(res =>
+      this.counts.update(c => ({ ...c, countLunas: res.totalElements })));
   }
 
   // pie chart: breakdown status — sama buat semua role
@@ -134,6 +138,8 @@ export class Dashboard {
       { label: 'Direview', value: Number(c['countDireview'] ?? 0) },
       { label: 'Disetujui', value: Number(c['countDiApprove'] ?? 0) },
       { label: 'Ditolak', value: Number(c['countDitolak'] ?? 0) },
+      { label: 'Dicairkan', value: Number(c['countDiCairkan'] ?? 0) },
+      { label: 'Lunas', value: Number(c['countLunas'] ?? 0) },
     ];
   });
 
@@ -144,27 +150,36 @@ export class Dashboard {
     return [
       { label: 'Pengajuan', value: Number(c['countPengajuan'] ?? 0) },
       { label: 'Sudah Diproses', value: diproses },
+      { label: 'Dicairkan', value: Number(c['countDiCairkan'] ?? 0) },
+      { label: 'Lunas', value: Number(c['countLunas'] ?? 0) },
     ];
   });
 
   // line chart SUPERADMIN: jumlah pengajuan per bulan
   readonly monthlyTrend = signal<ChartDatum[]>([]);
 
-  private loadMonthlyTrend(): void {
-    this.pinjamanTransactionService.getAll(0, 1000).subscribe(res => {
-      const perBulan = new Map<string, number>();
-      for (const trx of res.content) {
-        const d = new Date(trx.tanggalPengajuan);
-        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-        perBulan.set(key, (perBulan.get(key) ?? 0) + 1);
-      }
-      const sortedKeys = [...perBulan.keys()].sort();
-      this.monthlyTrend.set(sortedKeys.map(key => {
-        const [year, month] = key.split('-').map(Number);
-        const label = new Intl.DateTimeFormat('id-ID', { month: 'short', year: 'numeric' }).format(new Date(year, month - 1));
-        return { label, value: perBulan.get(key)! };
-      }));
-    });
-  }
+private loadMonthlyTrend(): void {
+  this.pinjamanTransactionService.getAll(0, 1000).subscribe(res => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth(); // 0-based
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const perHari = new Map<number, number>();
+    for (const trx of res.content) {
+      const d = new Date(trx.tanggalPengajuan);
+      if (d.getFullYear() !== year || d.getMonth() !== month) continue;
+      const day = d.getDate();
+      perHari.set(day, (perHari.get(day) ?? 0) + 1);
+    }
+
+    this.monthlyTrend.set(
+      Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => ({
+        label: String(day),
+        value: perHari.get(day) ?? 0,
+      }))
+    );
+  });
+}
 
 }

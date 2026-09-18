@@ -21,6 +21,9 @@ export class Chart implements OnChanges, OnDestroy {
   @Input() data: ChartDatum[] = [];
   @Input() type: ChartType = 'bar';
   @Input() colors: string[] = DEFAULT_COLORS;
+  @Input() title = '';
+  @Input() xTitle = '';   
+  @Input() yTitle = ''; 
   @ViewChild('canvasRef') canvasRef!: ElementRef<HTMLCanvasElement>;
 
   private chart?: ChartJS;
@@ -53,7 +56,22 @@ export class Chart implements OnChanges, OnDestroy {
       },
       options: {
         responsive: true,
-        plugins: { legend: { display: isPie } },
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: isPie,
+            labels: { boxWidth: 12, padding: 10, font: { size: 11 } },
+          },
+        },
+        // pie chart gak punya sumbu x/y, jadi scales cuma efektif buat bar/line
+        scales: isPie ? undefined : {
+          x: {
+            title: { display: !!this.xTitle, text: this.xTitle },
+          },
+          y: {
+            title: { display: !!this.yTitle, text: this.yTitle },
+          },
+        },
       },
     });
   }

@@ -18,7 +18,13 @@
         <app-chart type="pie" [data]="statusPieData()"></app-chart>
 
         @if (role() === 'SUPERADMIN') {
-            <app-chart type="line" [data]="monthlyTrend()"></app-chart>
+            <app-chart
+                type="line"
+                [data]="monthlyTrend()"
+                title="Pengajuan Bulan Ini"
+                xTitle="Tanggal"
+                yTitle="Jumlah Pengajuan">
+            </app-chart>
         } @else {
             <app-chart type="bar" [data]="comparisonBarData()"></app-chart>
         }
