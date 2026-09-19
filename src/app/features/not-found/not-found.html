@@ -1,0 +1,54 @@
+<div class="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50 via-white to-red-50 px-6 py-12">
+
+  <div class="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-[#C41230]/10 blur-3xl"></div>
+  <div class="pointer-events-none absolute -bottom-40 -right-32 h-[28rem] w-[28rem] rounded-full bg-[#7A0000]/10 blur-3xl"></div>
+  
+  <div
+    class="pointer-events-none absolute inset-0 flex select-none items-center justify-center text-[18rem] font-black leading-none text-[#C41230]/[0.04] sm:text-[26rem]"
+    aria-hidden="true">
+    404
+  </div>
+
+  <div class="relative z-10 w-full max-w-2xl text-center">
+
+    <img src="/logoSmall.png" alt="Okariru" class="mx-auto mb-8 h-10 w-auto" />
+
+    <div class="float mx-auto mb-8 w-full max-w-md">
+      <img src="/notFound.svg" alt="Halaman Tidak Ditemukan" class="w-full drop-shadow-xl" />
+    </div>
+
+
+    <h1 class="mt-5 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+      Oops, halaman tidak ditemukan
+    </h1>
+    <p class="mx-auto mt-3 max-w-md text-base leading-relaxed text-slate-500">
+      Maaf, halaman yang Anda cari tidak ada, sudah dipindahkan, atau Anda tidak memiliki akses ke halaman ini.
+    </p>
+
+    <!-- Tombol aksi -->
+    <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <button
+        type="button"
+        (click)="goBack()"
+        class="inline-flex w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-7 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md sm:w-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Kembali
+      </button>
+
+      <a
+        routerLink="/"
+        class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#C41230] to-[#7A0000] px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-[#C41230]/30 transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#C41230]/40 sm:w-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10" />
+        </svg>
+        Ke Beranda
+      </a>
+    </div>
+
+    <p class="mt-10 text-xs text-slate-400">
+      Butuh bantuan? Hubungi Nomor 0852-1182-1384
+    </p>
+  </div>
+</div>

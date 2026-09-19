@@ -9,6 +9,7 @@ import { menuAccessGuard } from './core/auth/menu-access.guards';
 export const routes: Routes = [
 
     { path: '', pathMatch: 'full', loadComponent: () => import('./features/landing-page/landing-page').then(m => m.LandingPage) },
+    
 
 // roleguard: cek role sesuai
 // menuaccess: cek menu di assign sesuai role
@@ -58,7 +59,9 @@ export const routes: Routes = [
                 path: 'master-plafond', canActivate: [menuAccessGuard], loadComponent: () => import('./features/admin/master-plafond/master-plafond').then(m => m.MasterPlafond),
                 data: {title: "Master Plafond"}}
         ]
-    }
+        
+    },
+    { path: '**', loadComponent: () => import('./features/not-found/not-found').then(m => m.NotFound) },
 ];
 
 
