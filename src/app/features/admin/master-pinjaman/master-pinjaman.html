@@ -10,9 +10,9 @@
             </svg>
             <label for="searchPinjaman" class="sr-only">Cari Pinjaman</label>
 
-            <input id="searchMenu"  type="text"
+            <input id="searchPinjaman"  type="text"
             #searchInput
-            placeholder="Cari Menu..."
+            placeholder="Cari Pinjaman..."
             (keyup.enter)="onSearch(searchInput.value)"
             class="bg-transparent text-sm text-gray-700 focus:outline-none"
             />
@@ -41,7 +41,7 @@
 
                 <!-- header pop up -->
                 <div class="flex items-center justify-between pb-4">
-                    <h3 h3 class="text-lg font-bold text-gray-900">Tambah Menu Baru</h3>
+                    <h3 h3 class="text-lg font-bold text-gray-900">Tambah Pinjaman Baru</h3>
                     <button type="button" (click)="cancelAddPinjaman()" 
                         class="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -273,7 +273,7 @@
                                     <button
                                     type="button"
                                     (click)="onEditPinjaman(p.pinjamanId)"
-                                    title="Edit Menu"
+                                    title="Edit Pinjaman"
                                     class="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 hover:text-red-600 transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -284,7 +284,7 @@
                                     <button
                                     type="button"
                                     (click)="onDeletePinjaman(p.pinjamanId)"
-                                    title="Hapus Menu"
+                                    title="Hapus Pinjaman"
                                     class="rounded-lg p-1.5 text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
