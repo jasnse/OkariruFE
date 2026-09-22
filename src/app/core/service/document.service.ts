@@ -16,6 +16,13 @@ export class DocumentService {
     }
 
     getFileBlob(url: string): Observable<Blob> {
-        return this.http.get(url, { responseType: 'blob' })
+        // backend ngasih path relatif "/api/v1/...". Di prod itu udah bener langsung
+        // (environment.apiUrl juga relatif, kena rewrite Vercel), tapi di dev environment.apiUrl
+        // itu absolut (http://localhost:8080/api/v1) karena FE & BE beda origin/port pas lokal.
+        // Jadi "/api/v1" di depan path backend ditukar ke environment.apiUrl biar konsisten di kedua mode.
+        const resolvedUrl = url.startsWith('/api/v1')
+            ? url.replace('/api/v1', environment.apiUrl)
+            : url;
+        return this.http.get(resolvedUrl, { responseType: 'blob' })
     }
 }
