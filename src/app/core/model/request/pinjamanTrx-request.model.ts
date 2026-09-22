@@ -11,3 +11,16 @@ export interface pinjamanTransactionUpdate {
     noteBackOffice: string | null
     lastUpdateBy: number | null
 }
+
+export interface pinjamanTransactionReview {
+    note: string | null;
+}
+
+export interface pinjamanTransactionApproval {
+    approved: boolean;
+    note: string | null;
+}
+
+export interface pinjamanTransactionDisburse {
+    note: string | null;
+}

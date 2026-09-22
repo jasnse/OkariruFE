@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { catchError, of, switchMap, tap } from 'rxjs';
+import { Observable, catchError, of, switchMap, tap } from 'rxjs';
 import { NgClass, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -12,7 +12,7 @@ import { pinjamanTrxGet } from '../../core/model/response/pinjamanTrx-response.m
 import { customerGet } from '../../core/model/response/customer-response.model';
 import { pinjamanGet } from '../../core/model/response/pinjaman-response.model';
 import { documentGet } from '../../core/model/response/document-response.model';
-import { pinjamanTransactionUpdate } from '../../core/model/request/pinjamanTrx-request.model';
+import { pinjamanTransactionReview, pinjamanTransactionApproval, pinjamanTransactionDisburse } from '../../core/model/request/pinjamanTrx-request.model';
 import { PageResponse } from '../../core/model/shared/page-response.model';
 import { AngsuranService } from '../../core/service/angsuran.service';
 
@@ -244,26 +244,9 @@ export class LoanRequestList implements OnInit, OnDestroy {
     this.activeTab.set(tab);
   }
 
-  // payload dasar yang dipakai semua stage
-  private basePayload(trx: pinjamanTrxGet): pinjamanTransactionUpdate {
-    return {
-      customerId: trx.customerId,
-      pinjamanId: trx.pinjamanId,
-      nominalPinjaman: trx.nominalPinjaman,
-      tenor: trx.tenor,
-      statusPengajuan: trx.statusPengajuan,
-      tanggalReview: trx.tanggalReview,
-      tanggalApproval: trx.tanggalApproval,
-      noteMarketing: trx.noteMarketing,
-      noteBm: trx.noteBm,
-      noteBackOffice: trx.noteBackOffice,
-      lastUpdateBy: null
-    };
-  }
-
-  private submitUpdate(payload: pinjamanTransactionUpdate, trx: pinjamanTrxGet, errorLabel: string){
+  private submitAction(request$: Observable<any>, errorLabel: string){
     this.submitting.set(true);
-    this.pinjamanTransactionService.update(trx.transPinjamanId, payload).pipe(
+    request$.pipe(
       tap(() => {
         this.submitting.set(false);
         this.closeDetail();
@@ -285,12 +268,8 @@ export class LoanRequestList implements OnInit, OnDestroy {
     const trx = this.selectedTrx();
     if (!trx) return;
 
-    const payload = this.basePayload(trx);
-    payload.statusPengajuan = 'Direview';
-    payload.tanggalReview = new Date().toISOString().slice(0, 10);
-    payload.noteMarketing = this.noteForm.note;
-
-    this.submitUpdate(payload, trx, 'submit review');
+    const payload: pinjamanTransactionReview = { note: this.noteForm.note };
+    this.submitAction(this.pinjamanTransactionService.review(trx.transPinjamanId, payload), 'submit review');
   }
 
   // stage: approval - BM
@@ -298,12 +277,8 @@ export class LoanRequestList implements OnInit, OnDestroy {
     const trx = this.selectedTrx();
     if (!trx) return;
 
-    const payload = this.basePayload(trx);
-    payload.statusPengajuan = 'Disetujui';
-    payload.tanggalApproval = new Date().toISOString().slice(0, 10);
-    payload.noteBm = this.noteForm.note;
-
-    this.submitUpdate(payload, trx, 'approve pengajuan');
+    const payload: pinjamanTransactionApproval = { approved: true, note: this.noteForm.note };
+    this.submitAction(this.pinjamanTransactionService.approval(trx.transPinjamanId, payload), 'approve pengajuan');
   }
 
   // oleh BM
@@ -311,38 +286,31 @@ export class LoanRequestList implements OnInit, OnDestroy {
     const trx = this.selectedTrx();
     if (!trx) return;
 
-    const payload = this.basePayload(trx);
-    payload.statusPengajuan = 'Ditolak';
-    payload.tanggalApproval = new Date().toISOString().slice(0, 10);
-    payload.noteBm = this.noteForm.note;
-
-    this.submitUpdate(payload, trx, 'reject pengajuan');
+    const payload: pinjamanTransactionApproval = { approved: false, note: this.noteForm.note };
+    this.submitAction(this.pinjamanTransactionService.approval(trx.transPinjamanId, payload), 'reject pengajuan');
   }
 
   cairkanPinjaman(){
     const trx = this.selectedTrx();
     if (!trx || trx.tenor == null) return;
 
-this.submitting.set(true);
+    this.submitting.set(true);
 
-  this.angsuranService.generate(trx.transPinjamanId, trx.tenor).pipe(
-    switchMap(() => {
-      const payload = this.basePayload(trx);
-      payload.statusPengajuan = 'Dicairkan';
-      payload.tanggalApproval = new Date().toISOString().slice(0, 10);
-      payload.noteBackOffice = this.noteForm.note;
-      return this.pinjamanTransactionService.update(trx.transPinjamanId, payload);
-    }),
-    tap(() => {
-      this.submitting.set(false);
-      this.closeDetail();
-      this.reload.update(v => v + 1);
-    }),
-    catchError((err) => {
-      this.submitting.set(false);
-      alert('Gagal cairkan pinjaman: ' + (err?.error?.message ?? err));
-      return of(null);
-    })
-  ).subscribe();
+    this.angsuranService.generate(trx.transPinjamanId, trx.tenor).pipe(
+      switchMap(() => {
+        const payload: pinjamanTransactionDisburse = { note: this.noteForm.note };
+        return this.pinjamanTransactionService.disburse(trx.transPinjamanId, payload);
+      }),
+      tap(() => {
+        this.submitting.set(false);
+        this.closeDetail();
+        this.reload.update(v => v + 1);
+      }),
+      catchError((err) => {
+        this.submitting.set(false);
+        alert('Gagal cairkan pinjaman: ' + (err?.error?.message ?? err));
+        return of(null);
+      })
+    ).subscribe();
   }
 }
