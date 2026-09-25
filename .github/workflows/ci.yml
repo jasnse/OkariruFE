@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
 
 jobs:
   build-and-test:
@@ -26,6 +26,12 @@ jobs:
 
       - name: Build (cek compile TypeScript & bundle)
         run: npx ng build
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Run unit tests
+        run: ./gradlew testDebugUnitTest
 
       - name: Run unit & integration tests
         run: npx ng test --watch=false
