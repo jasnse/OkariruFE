@@ -5,12 +5,8 @@ import { NgClass, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { PinjamanTransactionService } from '../../core/service/pinjaman-transaction.service';
-import { CustomerService } from '../../core/service/customer.service';
-import { PinjamanService } from '../../core/service/pinjaman.service';
 import { DocumentService } from '../../core/service/document.service';
 import { pinjamanTrxGet } from '../../core/model/response/pinjamanTrx-response.model';
-import { customerGet } from '../../core/model/response/customer-response.model';
-import { pinjamanGet } from '../../core/model/response/pinjaman-response.model';
 import { documentGet } from '../../core/model/response/document-response.model';
 import { pinjamanTransactionReview, pinjamanTransactionApproval, pinjamanTransactionDisburse } from '../../core/model/request/pinjamanTrx-request.model';
 import { PageResponse } from '../../core/model/shared/page-response.model';
@@ -39,8 +35,6 @@ export class LoanRequestList implements OnInit, OnDestroy {
   @Input() statusFilter = 'Pengajuan';
 
   private readonly pinjamanTransactionService = inject(PinjamanTransactionService)
-  private readonly customerService = inject(CustomerService)
-  private readonly pinjamanService = inject(PinjamanService)
   private readonly documentService = inject(DocumentService)
   private readonly angsuranService = inject(AngsuranService)
 
@@ -59,8 +53,6 @@ export class LoanRequestList implements OnInit, OnDestroy {
   isDetailOpen = signal(false);
   activeTab = signal<DetailTab>('customer');
   selectedTrx = signal<pinjamanTrxGet | null>(null);
-  selectedCustomer = signal<customerGet | null>(null);
-  selectedPinjaman = signal<pinjamanGet | null>(null);
   documents = signal<documentGet[]>([]);
   documentPreviews = signal<Record<number, DocumentPreview>>({});
   detailLoading = signal(false);
@@ -122,17 +114,14 @@ export class LoanRequestList implements OnInit, OnDestroy {
   hitungJumlahBungaSampaiLunas(): number {
   const nominal = this.selectedTrx()?.nominalPinjaman ?? 0;
   const tenor = this.selectedTrx()?.tenor ?? 0;
-  const bungaRate = this.selectedPinjaman()?.bunga ?? 0;
+  const bungaRate = this.selectedTrx()?.bunga ?? 0;
   const bungaPerBulan = (nominal * (bungaRate / 100));
-  const result = bungaPerBulan * tenor;
-  console.log(`hitungJumlahBungaSampaiLunas: nominal=${nominal}, tenor=${tenor}, bungaRate=${bungaRate}, bungaPerBulan=${bungaPerBulan}, result=${result}`);
-  return result;
-
+  return bungaPerBulan * tenor;
 }
 
   hitungJumlahBungaPerBulan(): number {
   const nominal = this.selectedTrx()?.nominalPinjaman ?? 0;
-  const bungaRate = this.selectedPinjaman()?.bunga ?? 0;
+  const bungaRate = this.selectedTrx()?.bunga ?? 0;
   const bungaPerBulan = (nominal * (bungaRate / 100));
   return bungaPerBulan;
 }
@@ -149,9 +138,9 @@ export class LoanRequestList implements OnInit, OnDestroy {
   const tenor = this.selectedTrx()?.tenor ?? 0;
   if (!tenor) return 0;
   const pokokPerBulan = Math.floor(nominal / tenor);
-  const bungaRate = this.selectedPinjaman()?.bunga ?? 0;
+  const bungaRate = this.selectedTrx()?.bunga ?? 0;
   const bungaPerBulan = Math.floor(nominal * (bungaRate / 100));
-  const biayaLainnya = this.selectedPinjaman()?.biayaLainnya ?? 0;
+  const biayaLainnya = this.selectedTrx()?.biayaLainnya ?? 0;
   const biayaLainnyaPerBulan = Math.floor(biayaLainnya / tenor);
   return pokokPerBulan + bungaPerBulan + biayaLainnyaPerBulan;
 }
@@ -185,25 +174,14 @@ export class LoanRequestList implements OnInit, OnDestroy {
     this.isDetailOpen.set(true);
     this.activeTab.set('customer');
     this.selectedTrx.set(trx);
-    this.selectedCustomer.set(null);
-    this.selectedPinjaman.set(null);
     this.documents.set([]);
     this.clearDocumentPreviews();
     this.noteForm = { note: '' };
     this.detailLoading.set(true);
 
-    this.customerService.getById(trx.customerId).subscribe({
-      next: (res) => this.selectedCustomer.set(res),
-      error: () => this.selectedCustomer.set(null)
-    });
-
-    if (trx.pinjamanId != null) {
-      this.pinjamanService.getById(trx.pinjamanId).subscribe({
-        next: (res) => this.selectedPinjaman.set(res),
-        error: () => this.selectedPinjaman.set(null)
-      });
-    }
-
+    // informasi customer & pinjaman dibaca dari snapshot yang sudah ikut di response trx (beku
+    // sejak pengajuan dibuat), bukan fetch live -- supaya tidak berubah kalau customer update
+    // profil atau master data pinjaman diubah admin di tengah proses. Cuma dokumen yang perlu di-fetch.
     this.documentService.getByCustomerAndTrx(trx.customerId, trx.transPinjamanId).subscribe({
       next: (res) => {
         this.documents.set(res);

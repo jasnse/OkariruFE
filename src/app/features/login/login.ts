@@ -12,6 +12,7 @@ import { loginRequest } from '../../core/model/request/auth-request.model';
 export class Login {
   errorMessage = signal("")
   loading = signal(false)
+  showPassword = signal(false)
   form: FormGroup
 
     constructor(
@@ -24,6 +25,10 @@ export class Login {
     password: ["", Validators.required]
   });
 }
+
+  togglePasswordVisibility(){
+    this.showPassword.update(v => !v);
+  }
 
   onSubmit(){
     console.log('submit dipanggil, valid:', this.form.valid, 'value:', this.form.value);
